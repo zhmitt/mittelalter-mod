@@ -1,0 +1,31 @@
+schema: spec-driven
+
+context: |
+  This repository is the Mittelalter-Mod: a content mod for Minecraft Java Edition
+  built on NeoForge (Java/Gradle stack).
+  Canonical governance lives in AGENTS.md.
+  Canonical behavior and change history live in openspec/.
+  Canonical execution state and deterministic checks live in workflow/.
+  Keep tool adapters thin and do not move process truth into tool-specific files.
+  This project inherits its hybrid Claude/Gemini/Codex workflow from
+  the app.dev-template baseline; product-specific specs (blocks, items,
+  mobs, mechanics) live under openspec/specs/ alongside the inherited
+  workflow specs.
+
+rules:
+  proposal:
+    - Explain why the change belongs in the canonical layers rather than only in a tool adapter.
+    - Call out any portability or drift risks introduced by the change.
+    - When a change depends on agent workspaces or worktrees, state the intended workspace ownership model and handoff risk.
+  specs:
+    - Use concrete SHALL-style requirements and include scenarios.
+    - Keep requirements tool-neutral unless the capability is explicitly adapter-specific.
+  design:
+    - Describe how canonical layers and adapter layers interact.
+    - Explain any repo-local conventions added beyond stock OpenSpec.
+    - For workflow or tooling changes, explain workspace ownership, branch handoff, and checkpoint strategy when applicable.
+  tasks:
+    - Include steps for updating canonical docs, scripts, and any affected adapters.
+    - Include verification steps for deterministic scripts and adapter parity.
+
+    - When a branch or workspace handoff is part of the work, include checkpoint and handover evidence requirements.

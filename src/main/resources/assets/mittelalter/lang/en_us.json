@@ -1,0 +1,11 @@
+{
+  "itemGroup.mittelalter": "Mittelalter Mod",
+  "block.mittelalter.example_block": "Example Block",
+  "item.mittelalter.example_item": "Example Item",
+
+  "mittelalter.configuration.title": "Mittelalter Mod Configs",
+  "mittelalter.configuration.section.mittelalter.common.toml": "Mittelalter Mod Configs",
+  "mittelalter.configuration.section.mittelalter.common.toml.title": "Mittelalter Mod Configs",
+  "mittelalter.configuration.items": "Item List",
+  "mittelalter.configuration.logDirtBlock": "Log Dirt Block"
+}
