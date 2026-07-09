@@ -41,7 +41,7 @@ if [[ "$staged_mode" == true ]]; then
   # Slug-only ID format (this repo does not use numeric prefixes).
   if [[ -z "$requested_change" ]]; then
     derived_changes="$(git diff --cached --name-only 2>/dev/null \
-      | grep -oE '^openspec/changes/[A-Za-z0-9][A-Za-z0-9._-]*' \
+      | { grep -oE '^openspec/changes/[A-Za-z0-9][A-Za-z0-9._-]*' || true; } \
       | sed 's|openspec/changes/||' \
       | sort -u)"
     derived_count="$(printf '%s\n' "$derived_changes" | grep -cv '^$' || true)"

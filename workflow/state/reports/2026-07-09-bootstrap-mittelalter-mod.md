@@ -27,3 +27,12 @@ Bootstrapped the hybrid app.dev-template workflow (governance, workflow scripts,
 - Evidence: ./gradlew build succeeded in 3m 27s and produced build/libs/mittelalter-0.1.0-SNAPSHOT.jar; JDK 25 (Temurin) used as toolchain; see verification.md
 - Notes: Homebrew could not install JDK 25 on this macOS version; used a manual Temurin download instead.
 - Next: Add verification.md and workflow evidence
+
+## 2026-07-09 07:43:35
+
+- Summary: Fixed a pipefail bug in post-impl-check.sh --staged that would abort on commits touching no openspec/changes/ path
+- Change: bootstrap-mittelalter-mod
+- Phase state: ready_for_archive
+- Tasks complete: 19/19
+- Completed: All tracked tasks are currently marked complete.
+- Next: Archive the change into openspec/changes/archive/
