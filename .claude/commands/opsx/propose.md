@@ -16,3 +16,5 @@ Then:
 
 Prefer the canonical OpenSpec artifacts over any tool-local memory or conventions.
 
+If `.github/project-sync.json` exists, run `workflow/scripts/github-sync.sh sync` after creating the change so the GitHub Projects board picks up the new tracking issue.
+

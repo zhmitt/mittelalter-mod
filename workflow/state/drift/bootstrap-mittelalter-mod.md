@@ -1,6 +1,6 @@
 # Spec-Drift Report: bootstrap-mittelalter-mod
 
-Generated: 2026-07-09T05:43:51Z
+Generated: 2026-07-09T05:44:40Z
 
 ## Summary
 

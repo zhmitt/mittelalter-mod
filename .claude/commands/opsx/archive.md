@@ -13,3 +13,5 @@ Before archiving, confirm that:
 Prefer `openspec archive <change-id>` when the OpenSpec CLI is available.
 After archiving, refresh `workflow/state/task-registry.md`.
 
+If `.github/project-sync.json` exists, run `workflow/scripts/github-sync.sh archive <change-id>` to close the tracking issue and mark the board card Done.
+

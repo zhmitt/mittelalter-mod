@@ -13,3 +13,5 @@ Use when:
 
 Keep canonical truth in `openspec/` and `workflow/`.
 
+If `.github/project-sync.json` exists, run `workflow/scripts/github-sync.sh sync` after creating the change so the GitHub Projects board picks up the new tracking issue.
+

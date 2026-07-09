@@ -5,5 +5,7 @@ Read AGENTS.md and openspec/config.yaml first.
 
 Create or refine an active change in openspec/changes/<change-id>/ and keep the canonical workflow in openspec/ and workflow/.
 Do not move process truth into Gemini-only files.
+
+If .github/project-sync.json exists, run workflow/scripts/github-sync.sh sync after creating the change so the GitHub Projects board picks up the new tracking issue.
 """
 

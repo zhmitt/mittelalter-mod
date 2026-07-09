@@ -16,3 +16,11 @@ Append-only project status log for deterministic session handover.
 - Completed: All tracked tasks are currently marked complete.
 - Evidence: openspec/changes/bootstrap-mittelalter-mod/verification.md, workflow/state/reports/2026-07-09-bootstrap-mittelalter-mod.md
 - Next: Archive the change into openspec/changes/archive/
+
+## 2026-07-09 10:25:09
+- Change: github-project-sync
+- Status: implemented
+- Summary: Lean GitHub Projects (v2) board wired as a one-directional, mechanically-derived visualization of openspec/changes/ state; openspec remains SSOT. Added workflow/scripts/github-sync.sh (sync/archive), .github/project-sync.json, issue template, and adapter pointers across Claude/Gemini/Codex.
+- Completed: All tracked tasks are currently marked complete.
+- Evidence: openspec/changes/github-project-sync/verification.md, workflow/state/reports/2026-07-09-github-project-sync.md
+- Next: Add verification.md and workflow evidence

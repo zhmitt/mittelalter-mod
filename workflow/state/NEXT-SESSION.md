@@ -1,13 +1,13 @@
 # Next Session
 
-**Last Updated:** 2026-07-09 07:43:35
+**Last Updated:** 2026-07-09 10:25:09
 
 ## Last Milestone
 
-- Change: bootstrap-mittelalter-mod
-- Summary: Fixed a pipefail bug in post-impl-check.sh --staged that would abort on commits touching no openspec/changes/ path
-- State: ready_for_archive
-- Tasks complete: 19/19
+- Change: github-project-sync
+- Summary: Lean GitHub Projects (v2) board wired as a one-directional, mechanically-derived visualization of openspec/changes/ state; openspec remains SSOT. Added workflow/scripts/github-sync.sh (sync/archive), .github/project-sync.json, issue template, and adapter pointers across Claude/Gemini/Codex.
+- State: ready_for_verify
+- Tasks complete: 13/13
 - Completed: All tracked tasks are currently marked complete.
 
 ## Active Changes
@@ -16,6 +16,10 @@
 
   Next: Archive the change into openspec/changes/archive/
 
+- github-project-sync: ready_for_archive
+
+  Next: Add verification.md and workflow evidence
+
 ## Recommended Next Step
 
-- Archive the change into openspec/changes/archive/
+- Add verification.md and workflow evidence
