@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"mittelalter:arthurian_enabled"}],"type":"minecraft:crafting_shaped","pattern":["FFF","PRP","FFF"],"key":{"F":"minecraft:oak_fence","P":"minecraft:paper","R":"mittelalter:ruby"},"result":{"id":"mittelalter:tournament_grounds_deed","count":1}}

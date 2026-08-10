@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"mittelalter:arthurian_enabled"}],"type":"minecraft:crafting_shaped","pattern":[" R ","WWW"," S "],"key":{"R":"mittelalter:ruby","W":"minecraft:red_wool","S":"minecraft:oak_log"},"result":{"id":"mittelalter:tournament_standard","count":1}}

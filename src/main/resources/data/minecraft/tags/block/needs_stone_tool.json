@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "mittelalter:silver_ore",
+    "mittelalter:deepslate_silver_ore",
+    "mittelalter:silver_block",
+    "mittelalter:raw_silver_block"
+  ]
+}

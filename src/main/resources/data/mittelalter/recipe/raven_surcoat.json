@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"mittelalter:arthurian_enabled"}],"type":"minecraft:crafting_shaped","category":"equipment","key":{"C":"minecraft:iron_chestplate","D":"minecraft:black_dye","S":"mittelalter:officer_signet","W":"minecraft:white_wool"},"pattern":["WDW","WCW"," S "],"result":{"count":1,"id":"mittelalter:raven_surcoat"}}

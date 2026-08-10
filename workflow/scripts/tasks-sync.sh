@@ -191,7 +191,9 @@ cat >> "$tmp_file" <<EOF
 EOF
 
 if [[ -n "$archived_section" ]]; then
-  printf '%s\n' "$archived_section" >> "$tmp_file"
+  # archived_section already ends with a newline; adding another one creates
+  # a trailing blank line that fails git diff --check.
+  printf '%s' "$archived_section" >> "$tmp_file"
 else
   echo "*No archived changes*" >> "$tmp_file"
 fi

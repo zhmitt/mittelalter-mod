@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["LIL", "LIL", "LIL"],
+  "key": { "L": "minecraft:oak_log", "I": "minecraft:iron_nugget" },
+  "result": { "id": "mittelalter:oak_palisade", "count": 6 }
+}

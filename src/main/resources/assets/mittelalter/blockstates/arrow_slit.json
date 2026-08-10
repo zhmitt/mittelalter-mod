@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "mittelalter:block/arrow_slit" },
+    "facing=east": { "model": "mittelalter:block/arrow_slit", "y": 90 },
+    "facing=south": { "model": "mittelalter:block/arrow_slit", "y": 180 },
+    "facing=west": { "model": "mittelalter:block/arrow_slit", "y": 270 }
+  }
+}

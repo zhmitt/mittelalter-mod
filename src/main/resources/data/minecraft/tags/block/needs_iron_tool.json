@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "mittelalter:ruby_ore",
+    "mittelalter:deepslate_ruby_ore",
+    "mittelalter:ruby_block",
+    "mittelalter:reinforced_stone",
+    "mittelalter:arrow_slit"
+  ]
+}

@@ -1,0 +1,1 @@
+{"neoforge:conditions":[{"type":"mittelalter:arthurian_enabled"}],"type":"minecraft:crafting_shaped","pattern":["GRG","PMP","GRG"],"key":{"G":"minecraft:gold_ingot","R":"mittelalter:ruby","P":"minecraft:paper","M":"minecraft:map"},"result":{"id":"mittelalter:camelot_charter","count":1}}

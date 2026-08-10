@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["RRR", "R R", "RRR"],
+  "key": { "R": "mittelalter:reinforced_stone" },
+  "result": { "id": "mittelalter:arrow_slit", "count": 4 }
+}
