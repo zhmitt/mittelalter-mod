@@ -23,7 +23,8 @@ sourceSets.main.resources {
 
     // Exclude common development only resources from finalized outputs
     exclude("**/*.bbmodel") // BlockBench project files
-    exclude("src/generated/**/.cache") // datagen cache files
+    exclude("**/.cache/**") // datagen cache files
+    exclude("**/textures/source/**") // source atlases used to create individual release textures
 }
 
 repositories {
@@ -32,6 +33,11 @@ repositories {
 
 base {
     archivesName = mod_id
+}
+
+// GameTests stay on the main development classpath for runGameTestServer, but are not release content.
+tasks.named('jar', Jar).configure {
+    exclude('de/mittelalter/gametest/**')
 }
 
 // Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.

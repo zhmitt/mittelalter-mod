@@ -1,10 +1,10 @@
 # Next Session
 
-**Last Updated:** 2026-08-10 20:56:24
+**Last Updated:** 2026-08-10 21:41:45
 
 ## Last Summary
 
-Alle elf Changes implementiert, verifiziert und archiviert; GitHub-Projektaufgaben geschlossen. Gesamt-Build, Tests, Datagen, JSON-, Registry- und Diff-Prüfungen sind grün. Es gibt keinen aktiven Change; nächster Schritt ist bei Bedarf ein neuer OpenSpec-Change.
+V1 integration release candidate 0.1.0-rc.1 completed and archived. Four NeoForge GameTests, direct JAR audit, packaging hygiene, checksum evidence, runData and bounded client smoke pass. GitHub issue #12 is closed. Manual visual/feel checklist remains for release promotion; next feature change can target V2 siege engines.
 
 ## Active Changes
 

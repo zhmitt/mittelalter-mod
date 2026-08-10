@@ -182,3 +182,30 @@ Append-only project status log for deterministic session handover.
 - Summary: Alle elf Changes implementiert, verifiziert und archiviert; GitHub-Projektaufgaben geschlossen. Gesamt-Build, Tests, Datagen, JSON-, Registry- und Diff-Prüfungen sind grün. Es gibt keinen aktiven Change; nächster Schritt ist bei Bedarf ein neuer OpenSpec-Change.
 - Change: none
 - State: no_change
+
+## 2026-08-10 21:33:31
+- Change: v1-integration-release-candidate
+- Status: checkpointed
+- Summary: Created v1-integration-release-candidate with GameTest, packaged-JAR audit, deterministic verification, and honest manual acceptance boundaries; GitHub issue #12 synced.
+- Remaining: Complete the remaining tracked tasks.
+- Evidence: openspec/changes/v1-integration-release-candidate/verification.md, workflow/state/reports/2026-08-10-v1-integration-release-candidate.md
+- Next: Complete remaining tasks
+
+## 2026-08-10 21:40:53
+- Change: v1-integration-release-candidate
+- Status: checkpointed
+- Summary: V1 RC hardened with four dedicated GameTests, direct JAR audit, corrected packaging exclusions, RC metadata, checksum evidence, bounded client smoke, and explicit manual acceptance boundary.
+- Evidence: openspec/changes/v1-integration-release-candidate/verification.md, workflow/state/reports/2026-08-10-v1-integration-release-candidate.md
+- Next: Complete remaining tasks
+
+## 2026-08-10 21:41:04
+- Change: v1-integration-release-candidate
+- Status: implemented
+- Summary: All 13 RC tasks have implementation or evidence; deterministic pipeline, GameTests, artifact audit, and client smoke are complete, with manual visual checks explicitly deferred to release promotion.
+- Evidence: openspec/changes/v1-integration-release-candidate/verification.md, workflow/state/reports/2026-08-10-v1-integration-release-candidate.md
+- Next: Archive the change into openspec/changes/archive/
+
+## 2026-08-10 21:41:45
+- Summary: V1 integration release candidate 0.1.0-rc.1 completed and archived. Four NeoForge GameTests, direct JAR audit, packaging hygiene, checksum evidence, runData and bounded client smoke pass. GitHub issue #12 is closed. Manual visual/feel checklist remains for release promotion; next feature change can target V2 siege engines.
+- Change: none
+- State: no_change
