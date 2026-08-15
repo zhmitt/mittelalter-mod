@@ -348,7 +348,41 @@ irreversible or broad deletion, scope expansion, and secret disclosure remain
 explicit user gates. Repository governance can narrow native authority but can
 never bypass platform sandboxing or safety controls.
 
-+## External wait continuity
+## Approval-churn prevention
+
+Before dispatch, the Main/Integration Owner performs a **capability preflight**:
+resolve the worker's required filesystem, process, network, connector, remote
+runtime and external-write capabilities; choose a runtime that already supports
+the authorized work; pre-position exact commits, mirrors or non-secret artifacts
+when transfer would otherwise cause repeated elevation; and record an
+**approval budget**. The default budget is zero conversational approvals and at
+most one consolidated native platform approval for a known, bounded capability
+gap.
+
+A worker must not discover predictable permissions one command at a time. At
+startup it validates the authority contract and required capabilities
+read-only. If a required capability is absent, it reports one consolidated
+mismatch containing the blocked capability, resolved target/effect, why the
+current runtime cannot proceed, the narrowest safe grant or suitable runtime,
+and preserved state. It must not issue serial approval prompts or try command
+variants that cross the same boundary.
+
+Prefer designs that eliminate privileged observation: repository-owned
+instrumentation, process-local lifecycle evidence, deterministic harnesses, and
+pre-provisioned verification runtimes are preferred over OS-wide process
+inspection or ad-hoc observer scripts. After one native permission mismatch or
+one approval-gated method proves operationally unsuitable, park that method;
+resume only with an already-authorized capability, a redesigned bounded method,
+or a newly provisioned runtime. Approval denial never authorizes retries,
+fallback mutation, broader inspection, or scope expansion.
+
+When the user or parent explicitly authorizes uninterrupted execution until a
+real blocker, workers treat every in-scope action inside the effective authority
+intersection and approval budget as authorized. They interrupt only for an
+explicit user gate, an unavailable required native capability after the
+consolidated preflight, or a material ambiguity in target or effect.
+
+## External wait continuity
 
 When the primary orchestrator cannot make useful progress because an already
 running external operation is pending (for example CI, a remote test, build,

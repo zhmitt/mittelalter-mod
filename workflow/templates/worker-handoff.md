@@ -1,6 +1,20 @@
 # Worker handoff
 
-## Inherited Authority Contract
+## Capability preflight and approval budget
+
+- Required capabilities: `<filesystem/process/network/connectors/remotes/writes>`
+- Preflight result: `<available|one consolidated mismatch>`
+- Pre-positioned resources: `<exact commit/mirror/artifact/runtime or none>`
+- Approval budget: `<default zero conversational; max native prompts>`
+- Privilege-free design: `<process-local evidence/harness or why unavailable>`
+- Runtime fallback: `<named suitable runtime or park condition>`
+- Re-prompt prohibition: `<boundary/method that must not be retried>`
+
+Validate this block read-only before implementation. Do not discover predictable
+permissions command by command. One capability mismatch produces one
+consolidated report; it does not authorize retries or scope expansion.
+
++## Inherited Authority Contract
 
 - Authority source: `<parent session / explicit user authorization>`
 - Parent permission profile: `<sandbox / approval policy / relevant connector grants>`
