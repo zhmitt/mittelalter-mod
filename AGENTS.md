@@ -237,3 +237,164 @@ Hook-System hart erzwungen (Implementierung: `.claude/hooks/` und
 für genau einen Aufruf, schreibt aber einen Bypass-Record. Nur mit
 expliziter User-Autorisierung verwenden. Bei fehlschlagendem Hook erst
 die Root-Cause beheben, nicht bypassen.
++
+## Shared focus and orchestration baseline
+
+For every non-trivial implementation, declare one observable outcome, at most
+three acceptance criteria, non-goals, owned files/components, and a stop
+condition. Prefer the smallest vertical slice that satisfies acceptance. Process
+is proportional to risk, not line count.
+
+Unplanned findings default to follow-up. Only work required for acceptance or a
+credible security, privacy, data-integrity, payment, legal, or production risk
+may trigger a scope checkpoint. Before adding an abstraction, require two
+current consumers or immediate net complexity removal. Stop after two failed
+approaches, three commits without acceptance progress, or two unplanned fixes
+and re-scope instead of building more diagnostic infrastructure.
+
+The primary session is the orchestrator/integration owner: it owns priorities,
+shared-contract decisions, canonical handoff state, merge order, deployment,
+and closure. Durable change tasks own one branch/worktree; short-lived subagents
+own bounded slices. Parallel writing requires disjoint ownership, explicit
+contracts/dependencies, external-resource isolation, verification capacity, and
+integration order. Ambiguity defaults to sequential execution. Default capacity
+is three independent implementation slices and two completed-but-not-integrated
+branches; read-only and parked work do not consume implementation capacity.
+
+Workers return `workflow/templates/worker-handoff.md` with at most three
+out-of-scope findings. `workflow/scripts/finding-route.sh` only advises routing;
+it never authorizes or creates implementation work.
++
+## Proactive orchestration v3
+
+Scheduling is based on active mutable ownership, not unfinished-change count.
+Use one state per change: `active_write`, `external_wait`,
+`user_action_pending`, `parked`, `ready_for_verify`,
+`ready_for_archive`, or `done`. Only `active_write` consumes a writing
+lane. Where older text limits "unverified claims", this section supersedes
+that scheduling rule; the repository's canonical completion gate still remains
+the only definition of Done.
+
+Release a writing lane only through a Claim Release checkpoint recording the
+baseline and preservation reference, completed work, open gates/risks, exact
+resume step, released files/resources, absence of writing workers, and
+Integration Owner confirmation. Claim Release never implies completion.
+
+Within the accepted outcome and ownership, execute safe routine actions without
+a conversational micro-approval: read-only status/auth checks, required
+interactive sign-in initiation, local tests/builds, scoped worktree/worker setup,
+focused commits, evidence synchronization, small integration fixes, and
+external-wait monitor creation. Starting sign-in does not authorize credentials,
+MFA, new consent, or ambiguous account/tenant choices.
+
+Still require explicit authorization for production mutation/deployment,
+IAM/secret/permission changes, new or unbounded paid work, public communication,
+irreversible deletion, material product decisions, and push/merge unless already
+granted for the session. Native sandbox, connector, and approval boundaries and
+stricter repository-specific rules always prevail.
+
+The Main/Integration Owner may perform small conflict resolution,
+state/evidence synchronization, focused governance and integration patches, Git
+operations, and gates directly when delegation would add more coordination than
+risk reduction. Independent product slices and broad writes remain worker work.
+Verification is delta- and risk-based: reuse valid evidence and rerun what
+changed; reserve Full Evidence for high-risk or difficult-to-reverse work.
+
+Before stopping because progress cannot continue, execute any already-authorized
+recovery action. Otherwise return:
+
+```text
+Recovery Contract
+State: <external_wait|user_action_pending|parked>
+Blocker: <exact blocker>
+Preserved: <commit/stash/artifact and completed work>
+Recommendation: <default next path>
+Alternatives: <zero to two bounded alternatives>
+Authorized next action: <action executable without another decision, or none>
+Resume trigger: <observable event/owner>
+Next command or action: <exact continuation>
+```
+
+A global Codex Stop hook may request one continuation pass when this contract is
+missing; `stop_hook_active` prevents loops. The hook is a recovery failsafe,
+not a scheduler or permission bypass.
+
+## Inherited worker authority
+
+Every worker handoff must carry an **Inherited Authority Contract** with these
+fields: `Authority source`, `Parent permission profile`, `Inherited safe
+actions`, `Repository/worktree scope`, `External systems allowed`, `Explicit
+user gates`, `Forbidden actions`, and `Escalation condition`.
+
+Effective worker authority is the intersection of the parent session's actual
+runtime authority, the declared worker scope, and repository safety policy. A
+worker never gains authority the parent does not have. Within that intersection,
+the worker proceeds without micro-approval for in-scope, reversible work:
+reading and editing owned files, tests/lint/builds, temporary test artifacts,
+read-only Git and external checks, targeted staging/commits, already-authorized
+SSH/CI/container access, and monitoring an already-authorized operation.
+
+Escalation is impact-based, not command-name-based. A command such as `ssh`,
+`docker`, or `rm` is not by itself a user gate; evaluate its resolved target,
+side effects, reversibility, data sensitivity, environment, and declared scope.
+Workers must not request elevated execution pre-emptively when the action works
+inside their effective profile. If the runtime cannot inherit the parent
+profile, record the mismatch once and return the narrowest actionable approval
+request instead of serial command-by-command prompts.
+
+Production mutation, push/merge/release without prior authorization,
+IAM/permission/secret changes, new or unbounded cost, public communication,
+irreversible or broad deletion, scope expansion, and secret disclosure remain
+explicit user gates. Repository governance can narrow native authority but can
+never bypass platform sandboxing or safety controls.
+
++## External wait continuity
+
+When the primary orchestrator cannot make useful progress because an already
+running external operation is pending (for example CI, a remote test, build,
+deploy, import, provider job, or approval), it must establish continuation
+before yielding:
+
+- record the exact operation identifier, authoritative read-only status check,
+  owner, polling cadence/backoff, timeout, terminal success and failure states,
+  and the next action for each terminal state;
+- create exactly one thread-bound wake-up monitor with the runtime's supported
+  automation or recurring follow-up mechanism; while pending it stays quiet, on
+  a terminal result it wakes the owning session, reports evidence, continues the
+  recorded next action when authorized, and then disables itself;
+- reuse an existing monitor for the same operation instead of creating duplicate
+  polling, CI runs, deployments, or notifications;
+- never restart, cancel, replace, deploy, merge, or otherwise mutate the external
+  operation merely to make monitoring easier unless that mutation is separately
+  authorized;
+- cancel or disable the monitor when the operation becomes terminal, obsolete,
+  superseded, manually stopped, or the owning task closes.
+
+A repository polling script alone is not a wake-up guarantee. If the active
+runtime cannot create a durable wake-up monitor, state that limitation, preserve
+the continuation contract in the handoff, and use bounded foreground polling
+only when practical. Never claim autonomous continuation unless the wake-up
+path was actually created and its ownership is known.
+
+## Completed visible Codex task lifecycle
+
+Create visible change tasks from a same-directory fork that returns a real
+`threadId`; immediately assign a unique title, hand it into a tool-managed
+worktree, and treat the successful handoff's `destinationThreadId` as canonical.
+Rename the destination task before sending work. Never treat setup state or a
+`clientThreadId` as a completed handoff. Use
+`<PROJECT> · Change <change-id> · <short unique purpose>`, never generic titles.
+
+Archive exactly that destination task only after its final output, acceptance
+and tests, checkpoint commit or safe preservation, integration/preservation,
+absence of blockers, and unique change/worker mapping are confirmed. Any
+missing gate or client-only identity is `blocked-manual-cleanup`. Subagents are
+not visible tasks and never trigger archival or invented thread ids.
+
+Task archival and worktree release are separate. Release also requires exact
+ownership, cleanliness, secured checkpoint, no diagnostic need, and no active
+task owner. Never automatically delete branches or remove dirty, orphan,
+ambiguous, or diagnostically required worktrees. If app archival removes a
+worktree, verify with `git worktree list` that only the expected one disappeared.
+The pure `workflow/scripts/completed-task-cleanup-status.sh` checks eligibility
+but calls no Codex API and mutates no task, branch, or worktree.
