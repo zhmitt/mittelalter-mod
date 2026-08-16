@@ -1,11 +1,11 @@
 # Next Session
 
-**Last Updated:** 2026-08-16 09:10:03
+**Last Updated:** 2026-08-16 09:52:13
 
 ## Last Milestone
 
 - Change: 2026-08-16-outcome-guard
-- Summary: Outcome guard verified; unsupported evidence escalation now resets to the product critical path.
+- Summary: Adopted the reviewed deterministic JSON graph router and negative smoke matrix.
 - State: draft
 - Tasks complete: 4/4
 - Completed: All tracked tasks are currently marked complete.

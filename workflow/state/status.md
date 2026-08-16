@@ -241,3 +241,11 @@ Append-only project status log for deterministic session handover.
 - Completed: All tracked tasks are currently marked complete.
 - Evidence: openspec/changes/2026-08-16-outcome-guard/verification.md, workflow/state/reports/2026-08-16-2026-08-16-outcome-guard.md
 - Next: Complete proposal and delta specs
+
+## 2026-08-16 09:52:13
+- Change: 2026-08-16-outcome-guard
+- Status: implemented
+- Summary: Adopted the reviewed deterministic JSON graph router and negative smoke matrix.
+- Completed: All tracked tasks are currently marked complete.
+- Evidence: openspec/changes/2026-08-16-outcome-guard/verification.md, workflow/state/reports/2026-08-16-2026-08-16-outcome-guard.md
+- Next: Complete proposal and delta specs
