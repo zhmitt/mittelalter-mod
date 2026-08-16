@@ -1,5 +1,25 @@
 # Worker handoff
 
+## Outcome Guard
+
+- Outcome anchor: `<stable observable product/operational result>`
+- User value: `<who benefits and how>`
+- Required release evidence: `<proportional evidence for acceptance>`
+- Non-blocking supporting evidence: `<tooling or research evidence>`
+- Critical-path relation: `<direct|safety|evidence|supporting>`
+- Blocker class: `<product|safety-security|release-evidence|tooling|external-authority|none>`
+- Blocks exact criterion: `<criterion or none>`
+- Causal evidence: `<reproduction/causal chain or none>`
+- Smallest alternative evidence: `<alternative or none>`
+- Safe default: `<conservative isolation or none>`
+- Deferral route: `<follow-up|parked|none>`
+- Failed approaches: `<0|1|2>`
+- Complexity delta: `<components/dependencies added and removed>`
+
+A supporting finding cannot become blocking without the exact criterion and
+causal evidence. At two failed approaches or a supporting-to-supporting
+escalation, stop mutation and run the outcome reset.
+
 ## Capability preflight and approval budget
 
 - Required capabilities: `<filesystem/process/network/connectors/remotes/writes>`

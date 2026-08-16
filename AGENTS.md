@@ -348,6 +348,39 @@ irreversible or broad deletion, scope expansion, and secret disclosure remain
 explicit user gates. Repository governance can narrow native authority but can
 never bypass platform sandboxing or safety controls.
 
+## Outcome guard and scope reset
+
+Every change has one stable **Outcome Anchor**: the observable product or
+operational result, its user value, no more than three required acceptance
+criteria, proportional release evidence, and explicitly non-blocking supporting
+evidence. Supporting tooling does not become a hard dependency merely because
+its own verification fails.
+
+Classify every blocking claim as exactly one of `product`, `safety-security`,
+`release-evidence`, `tooling`, or `external-authority`. A tooling finding may
+block the outcome only with a concrete causal chain to an acceptance criterion
+or to security, privacy, data integrity, payment, safety, or Production. Missing
+release evidence first triggers a search for the smallest proportional
+alternative evidence. External-authority uncertainty and isolatable risk use a
+safe conservative default; disable or defer the affected feature while the
+independent outcome continues.
+
+Before creating or escalating supporting work, record its critical-path
+relation, exact blocked criterion, causal evidence, safe default, deferral route,
+and complexity delta. Supporting work defaults to non-blocking follow-up or
+parked research. It may become active only when it directly closes acceptance,
+prevents a concrete high-risk harm, removes more complexity than it adds, or has
+at least two current consumers.
+
+The scope-escalation budget is at most two supporting follow-ups, one new
+abstraction without a second current consumer, and two layers between product
+code and release evidence. After two failed approaches, when supporting work
+would spawn supporting work, or when the next step does not move the Outcome
+Anchor materially closer to delivery, run `workflow/scripts/outcome-reset.sh`.
+The reset keeps the smallest product critical path active, selects proportional
+alternative evidence, applies safe defaults, and parks or closes the rest. It
+does not create a new blocking Change by itself.
+
 ## Approval-churn prevention
 
 Before dispatch, the Main/Integration Owner performs a **capability preflight**:

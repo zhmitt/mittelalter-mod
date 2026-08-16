@@ -209,3 +209,35 @@ Append-only project status log for deterministic session handover.
 - Summary: V1 integration release candidate 0.1.0-rc.1 completed and archived. Four NeoForge GameTests, direct JAR audit, packaging hygiene, checksum evidence, runData and bounded client smoke pass. GitHub issue #12 is closed. Manual visual/feel checklist remains for release promotion; next feature change can target V2 siege engines.
 - Change: none
 - State: no_change
+
+## 2026-08-14 08:46:24
+- Summary: Shared focus and orchestration baseline synchronized; portable routing and worker-handoff checks pass. Existing product changes remain untouched and are the next-session context.
+- Change: none
+- State: no_change
+
+## 2026-08-14 10:15:32
+- Summary: Completed visible Codex task cleanup lifecycle adopted: exact destination identity, fail-closed archival gate, independent worktree release gate, canonical handoff metadata, and focused tests are in place. No task, branch, or worktree was deleted.
+- Change: adopt-completed-task-cleanup
+- State: ready_for_verify
+- Next: Add verification.md and workflow evidence
+
+## 2026-08-14 10:20:38
+- Summary: Completed visible Codex task lifecycle adoption is implemented and locally verified. Exact destination identity, fail-closed task archival, separate worktree-release eligibility, OpenSpec evidence, and worker-handoff metadata were added. Codex created no commit, staged no files, pushed nothing, and deleted no task, branch, or worktree. The repository main session must review inherited local changes, stage only this change's owned files, rerun focused checks, and create the checkpoint/commit if appropriate.
+- Change: adopt-completed-task-cleanup
+- State: ready_for_verify
+- Next: Add verification.md and workflow evidence
+
+## 2026-08-16 09:07:28
+- Change: 2026-08-16-outcome-guard
+- Status: implemented
+- Summary: Added an outcome guard that parks unsupported tooling escalation.
+- Evidence: openspec/changes/2026-08-16-outcome-guard/verification.md, workflow/state/reports/2026-08-16-2026-08-16-outcome-guard.md
+- Next: Complete proposal and delta specs
+
+## 2026-08-16 09:10:03
+- Change: 2026-08-16-outcome-guard
+- Status: implemented
+- Summary: Outcome guard verified; unsupported evidence escalation now resets to the product critical path.
+- Completed: All tracked tasks are currently marked complete.
+- Evidence: openspec/changes/2026-08-16-outcome-guard/verification.md, workflow/state/reports/2026-08-16-2026-08-16-outcome-guard.md
+- Next: Complete proposal and delta specs

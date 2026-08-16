@@ -1,15 +1,25 @@
 # Next Session
 
-**Last Updated:** 2026-08-10 21:41:45
+**Last Updated:** 2026-08-16 09:10:03
 
-## Last Summary
+## Last Milestone
 
-V1 integration release candidate 0.1.0-rc.1 completed and archived. Four NeoForge GameTests, direct JAR audit, packaging hygiene, checksum evidence, runData and bounded client smoke pass. GitHub issue #12 is closed. Manual visual/feel checklist remains for release promotion; next feature change can target V2 siege engines.
+- Change: 2026-08-16-outcome-guard
+- Summary: Outcome guard verified; unsupported evidence escalation now resets to the product critical path.
+- State: draft
+- Tasks complete: 4/4
+- Completed: All tracked tasks are currently marked complete.
 
 ## Active Changes
 
-- none
+- 2026-08-16-outcome-guard: draft
+
+  Next: Complete proposal and delta specs
+
+- adopt-completed-task-cleanup: ready_for_verify
+
+  Next: Add verification.md and workflow evidence
 
 ## Recommended Next Step
 
-- Create or activate a change in openspec/changes/
+- Complete proposal and delta specs
