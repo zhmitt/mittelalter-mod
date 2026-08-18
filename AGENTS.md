@@ -39,21 +39,31 @@ Skip formal change scaffolding only for:
 
 Everything else (new items, blocks, mobs, mechanics, world-gen, etc.) should create or update an OpenSpec change.
 
-## Delegation policy
+## Orchestrator and delegation
 
-Main agents should keep orchestration context clean and actively evaluate delegation for every non-trivial block.
+The Main Session is the Tech Lead and Integration Owner. It owns outcome, scope,
+architecture, ownership, sequencing, integration and closure; it does not
+normally perform delegable implementation, testing or review itself.
 
-- Use specialized agents or subagents for implementation, review, testing, verification, documentation, and bounded diagnosis when the task can be isolated cleanly.
-- In Codex, prefer `explorer` agents for read-only codebase research, root-cause analysis, log/doc inspection, and spec reconciliation.
-- In Codex, prefer `worker` agents for bounded implementation, targeted test runs, verification, and documentation updates with explicit ownership and disjoint write sets.
-- Run agents in parallel when the next local step is not blocked and the scopes do not overlap; keep urgent blocking work local.
-- The main agent remains the tech lead/orchestration layer and owns architecture decisions, canonical workflow updates, and final integration unless explicitly delegated.
+For every non-trivial task, the Main Session **MUST delegate** each cleanly
+isolatable implementation, investigation, test and review slice to a scoped
+subagent or worker. This repository instruction is standing authorization to
+spawn subagents without asking the user again. Separate implementation from an
+independent review whenever independence is an acceptance requirement.
 
-All workers must:
+Parallelize only disjoint ownership; otherwise delegate sequentially. Keep work
+local only when it is trivial, inseparable, urgent integration work, or when
+delegation would cost more coordination than it removes. The user may disable
+delegation explicitly. Native runtime limits and genuine user gates—Production,
+IAM/secrets, irreversible actions, new cost, public communication and material
+scope expansion—still apply.
 
-1. read canonical artifacts first
-2. treat legacy layers as reference only
-3. report back into canonical artifacts or concise summaries
+Every worker receives outcome, acceptance criteria, owned and excluded paths,
+baseline, dependencies, authority, stop condition and required evidence. It
+reads canonical artifacts first, never widens scope silently, and returns a
+focused checkpoint plus concise evidence. Parallel writes require disjoint
+files, contracts and mutable resources; the Main Session owns integration order.
+
 
 ## Workspace ownership and branch handoff
 
