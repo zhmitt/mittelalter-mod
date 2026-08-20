@@ -391,6 +391,29 @@ The reset keeps the smallest product critical path active, selects proportional
 alternative evidence, applies safe defaults, and parks or closes the rest. It
 does not create a new blocking Change by itself.
 
+## Decision-minimal gates and authoritative evidence
+
+For every approval, publication, release or migration gate, minimize manual
+input to decisions only a responsible human can make. Identity, role, time,
+candidate or release identity, checksums, test results and other facts already
+available from an authenticated or authoritative system source **MUST** be
+derived by the system, shown for confirmation when material, and atomically
+bound to the decision. They must not be re-entered or maintained as a second
+source of truth.
+
+Evidence and prior approvals are invalidated only by a change to a dependency
+they attest. Formatting, report relocation or regeneration of derivable
+metadata must not restart unrelated review, UAT or cooling-off. A procedural
+artifact may block delivery only when a mandatory safety, legal, privacy,
+data-integrity, payment or release control depends on it and no smaller
+equivalent evidence exists.
+
+This rule does not remove substantive professional judgment, fresh
+authentication, cooling-off, immutable audit, fail-closed mismatch handling or
+required independent review. Systems must not derive or pre-author professional
+judgment, exception decisions, finding dispositions or risk acceptance.
+
+
 ## Approval-churn prevention
 
 Before dispatch, the Main/Integration Owner performs a **capability preflight**:
