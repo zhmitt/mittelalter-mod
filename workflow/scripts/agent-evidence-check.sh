@@ -3,9 +3,9 @@
 # run in the last 30 minutes when code files are staged. Also surface
 # any CLAUDE_HOOKS_OFF bypasses recorded in the last 24 h.
 #
-# Non-blocking by design — the hard gate lives in
-# .claude/hooks/gate-edit.sh (PreToolUse) and the existing
-# post-impl-check in .git-hooks/pre-commit.
+# Non-blocking by design. The edit hook is advisory for delegation evidence;
+# concrete task, acceptance, safety, and post-implementation gates remain in
+# the canonical workflow and pre-commit checks.
 
 set -euo pipefail
 

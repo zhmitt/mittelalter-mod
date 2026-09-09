@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+message_file="${1:-}"
+fail() { echo "Commit-message gate failed: $*" >&2; exit 1; }
+[[ -n "$message_file" && -f "$message_file" ]] || fail 'Git did not provide a commit message file.'
+
+# Route once, with the actual message; pre-commit only checks staged safety.
+staged_files="$(git diff --cached --name-only --diff-filter=ACMR)"
+implementation_files="$(printf '%s\n' "$staged_files" | grep -E '(^src/|^tests/|^scripts/|^workflow/scripts/|(^|/)(Dockerfile|Makefile)$|\.([jt]sx?|mjs|cjs|py|rs|go|java|kt|swift|rb|php|sh|bash|zsh|fish|ya?ml|toml|ini|cfg|conf|sql|css|scss|sass|less|html|svelte|vue)$)' || true)"
+staged_change_ids="$(printf '%s\n' "$staged_files" | awk -F/ '
+  $1 == "openspec" && $2 == "changes" && $3 == "archive" && $4 ~ /^[A-Za-z0-9][A-Za-z0-9._-]*$/ { print $4; next }
+  $1 == "openspec" && $2 == "changes" && $3 ~ /^[A-Za-z0-9][A-Za-z0-9._-]*$/ { print $3 }
+' | sort -u)"
+staged_change_count="$(printf '%s\n' "$staged_change_ids" | grep -cv '^$' || true)"
+[[ -z "$implementation_files" || "$staged_change_count" -le 1 ]] || fail 'implementation work must not span multiple active OpenSpec changes.'
+
+trailer() {
+  local key="$1" count exact
+  count="$(grep -Ec "^${key}:" "$message_file" || true)"
+  exact="$(grep -Ec "^${key}: [A-Za-z0-9][A-Za-z0-9._-]*$" "$message_file" || true)"
+  [[ "$count" -eq 0 ]] && return 0
+  [[ "$count" -eq 1 && "$exact" -eq 1 ]] || fail "${key} must appear exactly once as ${key}: <change-id>."
+  sed -n "s/^${key}: //p" "$message_file"
+}
+checkpoint_id="$(trailer Workflow-Checkpoint)"
+complete_id="$(trailer Workflow-Complete)"
+owner_id="$(trailer Change-Id)"
+[[ -z "$checkpoint_id" || -z "$complete_id" ]] || fail 'choose checkpoint or completion, not both.'
+intent_id="${checkpoint_id:-${complete_id:-$owner_id}}"
+if [[ -n "$intent_id" ]]; then
+  [[ -z "$owner_id" || "$owner_id" == "$intent_id" ]] || fail 'Change-Id conflicts with workflow intent.'
+  [[ -d "openspec/changes/$intent_id" || -d "openspec/changes/archive/$intent_id" ]] || fail "message references no OpenSpec change: $intent_id."
+  [[ "$staged_change_count" -eq 0 || "$staged_change_ids" == "$intent_id" ]] || fail 'message change does not match staged change ownership.'
+  staged_change_ids="$intent_id"
+fi
+[[ -z "$implementation_files" || -n "$intent_id" || "$staged_change_count" -gt 0 ]] || fail 'implementation work needs an active Change-Id breadcrumb or an explicit Workflow-Checkpoint.'
+
+while IFS= read -r change_id; do
+  [[ -n "$change_id" ]] || continue
+  tasks_path="openspec/changes/$change_id/tasks.md"
+  # Fully staged completion stays a completion claim despite a breadcrumb label.
+  # Inspect the index, not possibly newer unstaged work.
+  final=false
+  if grep -Fxq "$tasks_path" <<< "$staged_files"; then
+    tasks="$(git show ":$tasks_path")"
+    if grep -Eq '^- \[[xX]\]' <<< "$tasks" && ! grep -Eq '^- \[ \]' <<< "$tasks"; then final=true; fi
+  fi
+  [[ -z "$complete_id" ]] || final=true
+  if [[ "$final" == true ]]; then
+    [[ -x workflow/scripts/post-impl-check.sh ]] || fail 'completion validator is unavailable.'
+    workflow/scripts/post-impl-check.sh --change "$change_id" || exit 1
+    if [[ -x workflow/scripts/spec-drift-check.sh ]]; then
+      workflow/scripts/spec-drift-check.sh --change "$change_id" --quiet || exit 1
+    fi
+    echo "Completion evidence checked for $change_id; only change-done.sh establishes Done."
+  elif [[ -n "$checkpoint_id" ]]; then
+    [[ -x workflow/scripts/checkpoint-commit-check.sh ]] || fail 'checkpoint validator is unavailable.'
+    workflow/scripts/checkpoint-commit-check.sh --change "$change_id" --message-file "$message_file" --quiet || exit 1
+  elif [[ -n "$implementation_files" || -n "$owner_id" ]]; then
+    [[ "$owner_id" == "$change_id" ]] && grep -Eq '^Test: .+ exit 0$' "$message_file" \
+      || fail "ordinary incomplete breadcrumb for $change_id needs exact trailers Change-Id: $change_id and Test: <focused check> exit 0."
+  fi
+done <<< "$staged_change_ids"
+
+# Proposed future work is not a current implementation assertion. Hard drift
+# belongs to completion above and change-done, not speculative per-commit scans.
+# Checkpoint integrity is checked against the index by its own validator.
+if [[ -z "$intent_id" ]] && printf '%s\n' "$staged_files" | grep -Eq '^openspec/changes/.*/tasks\.md$|^workflow/state/task-registry\.md$'; then
+  if [[ -x workflow/scripts/tasks-sync.sh ]]; then
+    workflow/scripts/tasks-sync.sh --check >/dev/null || fail 'task registry is stale; run workflow/scripts/tasks-sync.sh.'
+  fi
+fi
+if [[ -x workflow/scripts/claim-evidence-check.sh ]]; then
+  workflow/scripts/claim-evidence-check.sh "$message_file" --quiet || true
+fi

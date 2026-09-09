@@ -4,6 +4,24 @@ This repository is the Mittelalter-Mod, a Minecraft Java Edition content mod bui
 
 This workflow is inherited from the `app.dev-template` baseline. Shared workflow policy changes should generally be proposed upstream first; this file may add product-specific constraints for the mod itself.
 
+## Working context and ordinary delivery
+
+At startup read this contract, NEXT-SESSION.md and the selected change once.
+Use `workflow/scripts/phase-status.sh --change <id>` for current state (omit
+--change for an overview). Read relevant design, specs and verification when
+the next action depends on them. Query specific status.md history only for an
+unresolved state or ownership question; never fully reload historical logs
+before each mutation. During work reread only changed relevant dependencies or
+context no longer available. Check Git ownership before overlapping edits.
+
+Ordinary delivery is implement, run the affected check, update short change
+memory when facts change, and create a focused breadcrumb. Do not synchronize
+status, reports, NEXT-SESSION and registry after every edit or commit. Refresh
+derived state once at a scheduling transition or closure. Full preservation is
+only for the existing Claim Release triggers. Script catalogs are options, not
+mandatory sequences. Keep active handoffs compact and history on disk.
+
+
 ## Canonical sources
 
 The only canonical sources of process truth are:
@@ -42,21 +60,22 @@ Everything else (new items, blocks, mobs, mechanics, world-gen, etc.) should cre
 ## Orchestrator and delegation
 
 The Main Session is the Tech Lead and Integration Owner. It owns outcome, scope,
-architecture, ownership, sequencing, integration and closure; it does not
-normally perform delegable implementation, testing or review itself.
+architecture, ownership, sequencing, integration and closure. It MAY implement,
+test, and integrate a bounded slice directly when local execution is the fastest
+coherent path.
 
-For every non-trivial task, the Main Session **MUST delegate** each cleanly
-isolatable implementation, investigation, test and review slice to a scoped
-subagent or worker. This repository instruction is standing authorization to
-spawn subagents without asking the user again. Separate implementation from an
-independent review whenever independence is an acceptance requirement.
+Delegate when it reduces elapsed delivery time through useful parallel
+ownership or specialized capability, or when genuinely independent judgment is
+required by a concrete risk or acceptance criterion. Delegation is not a
+ceremony for every non-trivial task, and implementation, test, evidence, and
+review SHALL NOT fan out into separate workers without one of those benefits.
+This repository instruction is standing authorization to spawn scoped workers
+when those conditions apply. The user may disable delegation explicitly.
 
-Parallelize only disjoint ownership; otherwise delegate sequentially. Keep work
-local only when it is trivial, inseparable, urgent integration work, or when
-delegation would cost more coordination than it removes. The user may disable
-delegation explicitly. Native runtime limits and genuine user gates—Production,
-IAM/secrets, irreversible actions, new cost, public communication and material
-scope expansion—still apply.
+Parallelize only disjoint ownership; otherwise integrate sequentially. Native
+runtime limits and genuine user gates—Production, IAM/secrets, irreversible
+actions, new cost, public communication and material scope expansion—still
+apply.
 
 Every worker receives outcome, acceptance criteria, owned and excluded paths,
 baseline, dependencies, authority, stop condition and required evidence. It
@@ -88,6 +107,23 @@ Rules:
 4. Before freeing a branch from a manual worktree back to a tool-managed workspace, create a checkpoint commit or an explicit stash first. Prefer a pushed checkpoint when the work is important or the app behavior is uncertain.
 5. Handoffs between tools or workspaces must record the change id when present, branch name, commit hash or stash reference, current workspace mode, and intended target workspace or tool.
 6. Run `workflow/scripts/workspace-status.sh` before branch/worktree handoffs when there is any doubt about current ownership.
+
+## Checkpoint commits
+
+An incomplete active change SHALL create an explicit checkpoint commit after a
+meaningful verified slice, before a workspace or branch handoff, an
+already-authorized external wait or non-production deploy, a writing-claim
+release, or a material rescope. This is not a cadence: time, line count, and
+commit count never create a checkpoint requirement by themselves.
+
+The commit message MUST contain `Workflow-Checkpoint: <change-id>`. Its staged
+index MUST atomically contain the affected `tasks.md`, checkpoint
+`verification.md`, matching `checkpointed` status entry, report,
+`NEXT-SESSION.md` resume step, and fresh task registry. The evidence records
+completed work, focused checks, open gates, and the exact next step. A
+checkpoint preserves incomplete work; it never establishes Done. Only
+`workflow/scripts/change-done.sh --change <id>` may do that. Proposal-only
+documentation commits remain subject to normal registry and spec-drift checks.
 
 ## Canonical workflow surface
 
@@ -218,16 +254,16 @@ Tech-Lead-Regel: Sub-Agent-Antwort ohne diesen Block = nicht akzeptiert.
 
 ### Hook-Failsafe-System
 
-Der Sub-Agent- und Workflow-Einsatz wird durch ein dreistufiges
-Hook-System hart erzwungen (Implementierung: `.claude/hooks/` und
+Das dreistufige Hook-System kombiniert Delegations-Telemetrie mit konkreten
+Git-Sicherheits- und Evidence-Checks (Implementierung: `.claude/hooks/` und
 `workflow/scripts/agent-evidence-check.sh`):
 
-1. **Gate 1 — PreToolUse-Block auf Edit/Write/MultiEdit/NotebookEdit**
-   (`.claude/hooks/gate-edit.sh`). Blockiert Edits an Code-Dateien
-   (u. a. `.java/.py/.sh/.rs/.go/…`), wenn in den letzten 4 h kein
-   `Plan`- oder `Explore`-Sub-Agent gelaufen ist. Whitelist (keine
-   Sperre): `*.md`, `*.json/yml/yaml/toml`, `openspec/`, `workflow/`,
-   `docs/`, `.claude/`, `.git-hooks/`, `.workflow-evidence/`, Dotfiles.
+1. **Gate 1 — PreToolUse-Advisory auf Edit/Write/MultiEdit/NotebookEdit**
+   (`.claude/hooks/gate-edit.sh`). Klassifiziert Code-Dateien und weist auf
+   fehlende aktuelle Plan-/Explore-Evidence hin, blockiert lokale Edits aber
+   nicht allein wegen fehlender Sub-Agent-Telemetrie. Delegation bleibt an
+   konkreten Parallelitäts-, Spezialfähigkeits- oder Unabhängigkeitsnutzen
+   gebunden.
 2. **Gate 2 — PreToolUse-Block auf Bash**
    (`.claude/hooks/gate-bash.sh`). Blockiert `git commit --no-verify`,
    `git commit -n`, `git push --no-verify`, `git -c core.hooksPath=…`
@@ -243,11 +279,10 @@ Hook-System hart erzwungen (Implementierung: `.claude/hooks/` und
 `.workflow-evidence/agents.jsonl` geloggt. Bypasses landen in
 `.workflow-evidence/overrides.jsonl`. Beide Logs sind `.gitignore`d.
 
-**Override**: `CLAUDE_HOOKS_OFF=1 <command>` deaktiviert Gate 1 + Gate 2
-für genau einen Aufruf, schreibt aber einen Bypass-Record. Nur mit
-expliziter User-Autorisierung verwenden. Bei fehlschlagendem Hook erst
-die Root-Cause beheben, nicht bypassen.
-+
+**Override**: `CLAUDE_HOOKS_OFF=1 <command>` bleibt für kompatible Hook-
+Bypasses beobachtbar und schreibt einen Record. Es darf den konkreten Git-
+Sicherheitsblock aus Gate 2 nur mit expliziter User-Autorisierung umgehen.
+Bei fehlschlagendem Sicherheits-Hook erst die Root-Cause beheben.
 ## Shared focus and orchestration baseline
 
 For every non-trivial implementation, declare one observable outcome, at most
@@ -274,7 +309,6 @@ branches; read-only and parked work do not consume implementation capacity.
 Workers return `workflow/templates/worker-handoff.md` with at most three
 out-of-scope findings. `workflow/scripts/finding-route.sh` only advises routing;
 it never authorizes or creates implementation work.
-+
 ## Proactive orchestration v3
 
 Scheduling is based on active mutable ownership, not unfinished-change count.
@@ -393,6 +427,16 @@ does not create a new blocking Change by itself.
 
 ## Decision-minimal gates and authoritative evidence
 
+For customer journeys, retain one compact candidate-bound evidence record:
+source/runtime/frontend identity, relevant non-secret configuration identity,
+tested steps, expected outcomes and applicable negative-contract cases. Reuse
+results while their attested dependencies are unchanged; rerun affected steps,
+not every journey for documentation or unrelated code edits. Provider acceptance
+alone is not proof of usable customer capability. Prefer existing deterministic
+tests for repeated mechanics and a bounded browser smoke on the actual candidate;
+do not create a new test platform. Adjacent or cosmetic findings do not extend
+agreed acceptance automatically. Stop when that acceptance passes.
+
 For every approval, publication, release or migration gate, minimize manual
 input to decisions only a responsible human can make. Identity, role, time,
 candidate or release identity, checksums, test results and other facts already
@@ -476,6 +520,42 @@ the continuation contract in the handoff, and use bounded foreground polling
 only when practical. Never claim autonomous continuation unless the wake-up
 path was actually created and its ownership is known.
 
+## Environment-scoped autonomy
+
+For a bounded Sandbox, Dev or Staging outcome, the Integration Owner MAY record
+one **environment-scoped authorization envelope** instead of asking for
+conversational re-approval at each derived step. The envelope names the
+authoritative target identity (provider project, account or tenant, and actual
+environment), the allowed operation chain, candidate-resolution rule, test-data
+bound, invariants, exclusions, expiry or stop condition, and any genuine
+human-only input. A branch name, provider UI label, or source ref alone is not
+the environment identity.
+
+Inside a valid envelope and the effective inherited authority, dependent steps
+such as a required canonical push, CI wait, bounded non-production deploy,
+configuration repair, and smoke test proceed without conversational
+micro-approval. An envelope never authorizes Production, IAM/secret or
+permission changes, real payments, public communication, irreversible work,
+new or unbounded cost, material scope expansion, or a target outside the named
+environment. It also cannot expand a native sandbox, connector, or provider
+permission boundary.
+
+Use `user_action_pending` only for a genuine human input or judgment: for
+example MFA, an inbox-only code, choosing an ambiguous account or tenant,
+professional risk acceptance, or an explicit material decision. A known
+Staging prerequisite, derived commit identity, expected CI wait, or permitted
+test record is not a user-action gate. If the runtime rejects an otherwise
+enveloped external write, issue at most one consolidated native-capability
+mismatch; do not convert it into serial conversational confirmation requests.
+
+An `external_wait` monitor remains terminally quiet: it may record and poll
+authoritative status without periodic narrative updates, and wakes its owner
+only for terminal success, terminal failure, timeout, or a required genuine
+human input. A scope/over-engineering audit is read-only: it classifies active
+work against the Outcome Anchor as `keep`, `park`, `split`, `close`, or
+`needs_decision`; it does not create tasks, alter workflow state, or authorize
+implementation by itself.
+
 ## Completed visible Codex task lifecycle
 
 Create visible change tasks from a same-directory fork that returns a real
@@ -498,3 +578,60 @@ ambiguous, or diagnostically required worktrees. If app archival removes a
 worktree, verify with `git worktree list` that only the expected one disappeared.
 The pure `workflow/scripts/completed-task-cleanup-status.sh` checks eligibility
 but calls no Codex API and mutates no task, branch, or worktree.
+
+## Lean delivery authority
+
+This section supersedes older conflicting delegation, checkpoint, and
+unfinished-claim scheduling wording. The observable outcome outranks procedural
+completeness. Keep each OpenSpec change as compact working memory: one outcome,
+no more than three acceptance criteria, explicit non-goals, a short task list,
+recorded decisions, and one next action. Derived reports, registries, adapter
+metadata, or formatting do not become acceptance criteria merely by existing.
+
+An explicit user decision inside the declared outcome and scope is operative and
+reusable for dependent reversible work. Reopen only the affected decision when
+an attested dependency changes, scope is exceeded, or genuine human-only
+judgment remains. Missing metadata blocks only the control that depends on it;
+Production-only metadata does not block unrelated implementation or
+non-production verification.
+
+Classify risk and evidence on the changed vertical slice. Small, isolated,
+reversible work gets one targeted check; standard behavior changes get OpenSpec,
+relevant acceptance evidence, and one breadcrumb; concrete security, privacy,
+payment, legal, data-integrity, safety, difficult-rollback, or Production risk
+gets independent review and environment-specific evidence. Procedures block
+only with a causal relation to acceptance or one of those gates.
+
+The Main Session may implement, test, and integrate a bounded slice directly.
+Delegate only when useful parallel ownership, specialized capability, or
+genuinely independent judgment reduces elapsed time or closes a concrete risk.
+Do not fan implementation, tests, evidence, and review into separate workers by
+default. A scope reset replaces the superseded critical path; it does not append
+another active scope.
+
+Use ordinary coherent progress commits with exact trailers
+`Change-Id: <change-id>` and `Test: <focused check> exit 0`. Reserve
+`Workflow-Checkpoint: <change-id>` and the full Claim Release evidence bundle
+for a workspace/branch handoff, external wait needing durable resume state,
+writing-claim release, or material rescope. Checkpoints preserve incomplete work
+and never establish Done; only
+`workflow/scripts/change-done.sh --change <id>` exit 0 does.
+
+Use exactly one orchestration state per change: `active_write`,
+`external_wait`, `user_action_pending`, `parked`, `ready_for_verify`,
+`ready_for_archive`, or `done`. Only `active_write` consumes writing
+capacity. Admit work by disjoint mutable ownership, dependency order, external
+resources, verification capacity, and integration capacity—not by counting all
+unfinished changes.
+
+A bounded worker handoff needs only change id, outcome, up to three acceptance
+criteria, owned and excluded scope, baseline/workspace, operative decisions,
+completed work plus focused evidence, open gate, and next action/stop condition.
+Add capability, environment, inherited-authority, Claim Release, visible-task,
+outcome-guard, or material-finding extensions only when their named trigger
+applies.
+
+Concrete Production, IAM, secret, permission, payment, legal, privacy, safety,
+irreversible-action, new-cost, public-communication, and material-scope gates
+remain fail-closed. Repository product constraints and native runtime boundaries
+remain authoritative.

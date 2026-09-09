@@ -24,11 +24,12 @@ als done gemeldet (Util geschrieben, nirgends importiert; Schema verschärft,
 nicht aktiviert; re-exports vergessen; Script fehlt komplett). Typecheck +
 Test blieben grün, weil sie den ungetesteten Pfad nicht testen.
 
-Die Sections "Definition of Done", "Parallel Work Limit" und "Sub-Agent
+Die Sections "Definition of Done", "Writing lane admission" und "Sub-Agent
 Output Format" in `AGENTS.md` sind verbindlich, nicht optional.
 
-**Vor jedem `done`/`fertig`/`implementiert`/`deployed`-Claim:**
+**Vor einem finalen `done`/`fertig`-Claim:**
 `workflow/scripts/change-done.sh --change <id>` exit 0 prüfen.
 
-**Bei Mass-Sweeps (>3 parallele Changes):** nach jeweils 3 Changes
-`change-done.sh`-Gate, bevor der nächste Batch startet.
+Implementierungs- und Deploy-Zwischenstände nennen ihre konkrete Evidence,
+sind aber keine Done-Claims. Normale Breadcrumbs benötigen keine Abschluss-
+zeremonie. Arbeitskontext und Scheduling folgen ausschließlich AGENTS.md.

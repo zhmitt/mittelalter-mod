@@ -1,9 +1,9 @@
 description = "Verify that an active change has enough evidence to be considered complete."
 
 prompt = """
-Read the active change and workflow/state/.
+Read the selected change and relevant current evidence, not historical state logs.
 
-Prefer delegating the evidence audit to @opsx-verifier for a scoped verification pass.
+Verify the changed slice and its applicable high-risk controls; do not add unrelated full evidence or independent review. Reuse valid decisions and evidence unless an attested dependency changed. Use @opsx-verifier only when genuinely independent judgment is required.
 
-Use workflow/scripts/milestone-sync.sh --summary "<what changed>" for meaningful checkpoints. When the change is ready for completion, run workflow/scripts/post-impl-prepare.sh --summary "<what changed>" to create or refresh the canonical verification/report skeletons, then refine them and run workflow/scripts/post-impl-check.sh before treating the change as complete.
+Inspect existing evidence first; use post-impl-prepare with --change only for missing skeletons. For final completion run workflow/scripts/change-done.sh --change <id> once; it includes post-impl-check. Reserve milestone-sync for durable Claim Release, not ordinary breadcrumbs. Follow AGENTS.md for candidate-bound journey evidence reuse.
 """

@@ -135,7 +135,6 @@ phase_state="in_progress"
 next_step="Continue implementation"
 status_label="checkpointed"
 
-workflow/scripts/tasks-sync.sh >/dev/null
 workflow/scripts/post-impl-prepare.sh --touch --change "$change_id" >/dev/null
 
 if [[ -f "$tasks_file" ]]; then
@@ -220,6 +219,11 @@ fi
   echo "## ${timestamp}"
   echo "- Change: ${change_id}"
   echo "- Status: ${status_label}"
+  case "$phase_state" in
+    external_wait|user_action_pending|parked)
+      echo "- Orchestration: ${phase_state}"
+      ;;
+  esac
   echo "- Summary: ${trimmed_summary}"
   if [[ -n "$completed" ]]; then
     echo "- Completed: ${completed}"
@@ -234,6 +238,19 @@ fi
   echo "- Next: ${next_step}"
 } >> workflow/state/status.md
 
+# Build the derived registry once, after all phase-affecting mutations. Reuse
+# that snapshot for both handoff sections rather than querying every phase again.
+workflow/scripts/tasks-sync.sh >/dev/null
+registry_phase() {
+  awk -v target="$1" '
+    /^### / { selected = ($0 == "### " target) }
+    selected && /^- State: / { print "State: " substr($0, 10) }
+    selected && /^- Next: / { print "Next: " substr($0, 9) }
+  ' workflow/state/task-registry.md
+}
+preserved_lines=""
+phase_output="$(registry_phase "$change_id")"
+phase_state="$(awk -F': ' '/^State:/ {print $2}' <<< "$phase_output")"
 {
   echo "# Next Session"
   echo
@@ -254,25 +271,45 @@ fi
   echo
   echo "## Active Changes"
   echo
+  active_delivery_count=0
+  recommended_next=""
   for active_change_dir in "${active_changes[@]}"; do
     active_change_id="$(basename "$active_change_dir")"
-    active_state="$(workflow/scripts/phase-status.sh --change "$active_change_id" | awk -F': ' '/^State:/ {print $2}')"
-    active_next="$(workflow/scripts/phase-status.sh --change "$active_change_id" | awk -F': ' '/^Next:/ {print $2}')"
+    active_phase="$(registry_phase "$active_change_id")"
+    active_state="$(awk -F': ' '/^State:/ {print $2}' <<< "$active_phase")"
+    active_next="$(awk -F': ' '/^Next:/ {print $2}' <<< "$active_phase")"
     if [[ "$active_change_id" == "$change_id" ]]; then
       active_next="$next_step"
     fi
+    case "$active_state" in
+      parked|external_wait|user_action_pending)
+        preserved_lines+="- ${active_change_id}: ${active_state}"$'\n'
+        ;;
+    esac
 
-    echo "- ${active_change_id}: ${active_state}"
-    echo
-    echo "  Next: ${active_next}"
-    echo
+    if [[ "$active_state" == "active_write" ]]; then
+      echo "- ${active_change_id}: ${active_state}"
+      echo
+      echo "  Next: ${active_next}"
+      echo
+      active_delivery_count=$((active_delivery_count + 1))
+      [[ -n "$recommended_next" ]] || recommended_next="$active_next"
+    fi
   done
+  [[ "$active_delivery_count" -gt 0 ]] || echo "- none"
+  echo
+  echo "## Preserved Work"
+  echo
+  if [[ -n "$preserved_lines" ]]; then
+    printf '%s' "$preserved_lines"
+  else
+    echo "- none"
+  fi
+  echo
   echo "## Recommended Next Step"
   echo
-  echo "- ${next_step}"
+  echo "- ${recommended_next:-No active delivery; explicitly activate one bounded change when needed.}"
 } > workflow/state/NEXT-SESSION.md
-
-workflow/scripts/tasks-sync.sh >/dev/null
 
 echo "Milestone state updated for ${change_id}."
 echo "- ${verification_file}"

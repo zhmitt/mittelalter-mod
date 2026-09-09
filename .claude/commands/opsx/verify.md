@@ -9,8 +9,13 @@ Read the active change, its `tasks.md`, and related workflow state.
 
 Then:
 
-1. use `workflow/scripts/milestone-sync.sh --summary "<what changed>"` for meaningful checkpoints during implementation
-2. run `workflow/scripts/post-impl-prepare.sh --summary "<what changed>"` when preparing final completion evidence
-3. review and refine the generated `verification.md` and matching report if they need more detail
-4. ensure tasks are complete
-5. run `workflow/scripts/post-impl-check.sh`
+1. verify the changed slice and its applicable high-risk controls; do not add
+   unrelated full evidence or independent review
+2. reuse valid decisions and evidence unless an attested dependency changed
+3. inspect existing evidence; use post-impl-prepare with --change only for missing
+   final evidence skeletons
+4. review the generated `verification.md` and report, ensure tasks are
+   complete, and run `workflow/scripts/change-done.sh --change <id>` once;
+   it includes post-impl-check, so do not run that separately
+5. use `workflow/scripts/milestone-sync.sh --summary "<what changed>"` only for
+   durable Claim Release, not for an ordinary local breadcrumb

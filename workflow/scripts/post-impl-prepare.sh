@@ -108,8 +108,6 @@ phase_state="in_progress"
 next_step="Continue implementation"
 status_label="checkpointed"
 
-workflow/scripts/tasks-sync.sh >/dev/null 2>&1 || true
-
 if [[ -f "$tasks_file" ]]; then
   task_total="$(count_matches '^- \[( |x|X)\]' "$tasks_file")"
   task_complete="$(count_matches '^- \[[xX]\]' "$tasks_file")"
@@ -223,12 +221,17 @@ fi
   echo "## ${timestamp}"
   echo "- Change: ${change_id}"
   echo "- Status: ${status_label}"
+  case "$phase_state" in
+    external_wait|user_action_pending|parked)
+      echo "- Orchestration: ${phase_state}"
+      ;;
+  esac
   echo "- Summary: ${summary}"
   echo "- Evidence: ${verification_file}, ${report_file}"
   echo "- Next: ${next_step}"
 } >> workflow/state/status.md
 
-workflow/scripts/tasks-sync.sh >/dev/null 2>&1 || true
+workflow/scripts/tasks-sync.sh >/dev/null
 
 echo "Prepared post-implementation artifacts for ${change_id}."
 echo "- ${verification_file}"

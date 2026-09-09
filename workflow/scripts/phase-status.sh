@@ -40,12 +40,39 @@ count_matches() {
   fi
 }
 
+latest_orchestration_state() {
+  local change="$1"
+  [[ -f workflow/state/status.md ]] || return 0
+  awk -v target="$change" '
+    function finish() {
+      if (explicit != "") state = explicit
+      else if (legacy != "") state = legacy
+      explicit = legacy = ""
+    }
+    /^## / || /^- Change: / { finish(); in_change = 0 }
+    $0 == "- Change: " target { in_change = 1; next }
+    in_change && /^- Orchestration: / { explicit = substr($0, 18) }
+    in_change && /^- (Status|State): / {
+      value = $0; sub(/^- (Status|State): /, "", value)
+      if (value ~ /^(active_write|external_wait|user_action_pending|parked|ready_for_verify|ready_for_archive|done)$/)
+        legacy = value
+      # Implemented is not Done, but supersedes a historical writing claim.
+      else if (value == "implemented" || value == "archived") legacy = "derive"
+    }
+    END { finish(); print state }
+  ' workflow/state/status.md
+}
+
 active_changes=()
 while IFS= read -r line; do
   active_changes+=("$line")
 done < <(find "$changes_root" -mindepth 1 -maxdepth 1 -type d ! -name archive | sort)
 
 if [[ ${#active_changes[@]} -eq 0 ]]; then
+  if [[ -n "$requested_change" ]]; then
+    echo "Active change not found: $requested_change" >&2
+    exit 1
+  fi
   if [[ "$json_output" == true ]]; then
     cat <<EOF
 {
@@ -73,8 +100,21 @@ if [[ -n "$requested_change" ]]; then
     exit 1
   fi
 elif [[ ${#active_changes[@]} -gt 1 ]]; then
-  echo "Multiple active changes detected. Use --change <change-id>." >&2
-  exit 1
+  # A read-only overview does not need a writing-owner selection.
+  [[ "$json_output" != true ]] || printf '[\n'
+  separator=""
+  for change_dir in "${active_changes[@]}"; do
+    if [[ "$json_output" == true ]]; then
+      printf '%s' "$separator"
+      "$0" --change "$(basename "$change_dir")" --json
+      separator=$',\n'
+    else
+      "$0" --change "$(basename "$change_dir")"
+      echo
+    fi
+  done
+  [[ "$json_output" != true ]] || printf ']\n'
+  exit 0
 else
   change_dir="${active_changes[0]}"
 fi
@@ -89,6 +129,7 @@ status_entry_exists=false
 spec_count=0
 tasks_total=0
 tasks_complete=0
+orchestration_state=""
 
 [[ -f "$change_dir/proposal.md" ]] && proposal_exists=true
 [[ -f "$change_dir/design.md" ]] && design_exists=true
@@ -112,10 +153,33 @@ if [[ "$tasks_exists" == true ]]; then
   tasks_complete="$(count_matches '^- \[[xX]\]' "$change_dir/tasks.md")"
 fi
 
+orchestration_state="$(latest_orchestration_state "$change_id")"
+
 state="draft"
 next_step="Complete proposal and delta specs"
-
+scaffold_state="complete"
 if [[ "$proposal_exists" != true || "$spec_count" -eq 0 ]]; then
+  scaffold_state="draft"
+elif [[ "$design_exists" != true ]]; then
+  scaffold_state="ready_for_design"
+elif [[ "$tasks_exists" != true ]]; then
+  scaffold_state="ready_for_tasks"
+fi
+
+# Scheduling is independent of document completeness or checked task count.
+case "$orchestration_state" in
+  active_write) state="active_write"; next_step="Continue the current delivery slice" ;;
+  external_wait) state="external_wait"; next_step="Resume only when the recorded external trigger occurs" ;;
+  user_action_pending) state="user_action_pending"; next_step="Resume only when the recorded user action occurs" ;;
+  parked) state="parked"; next_step="Resume only after explicit activation" ;;
+  ready_for_verify) state="ready_for_verify"; next_step="Verify the preserved implementation" ;;
+  ready_for_archive|done|derive|"") ;;
+  *) echo "Invalid orchestration state for ${change_id}: ${orchestration_state}" >&2; exit 1 ;;
+esac
+
+if [[ "$state" != draft ]]; then
+  : # Explicit non-terminal state already resolved above.
+elif [[ "$proposal_exists" != true || "$spec_count" -eq 0 ]]; then
   state="draft"
   next_step="Complete proposal and delta specs"
 elif [[ "$design_exists" != true ]]; then
@@ -125,8 +189,8 @@ elif [[ "$tasks_exists" != true ]]; then
   state="ready_for_tasks"
   next_step="Write tasks.md"
 elif [[ "$tasks_total" -eq 0 || "$tasks_complete" -lt "$tasks_total" ]]; then
-  state="in_progress"
-  next_step="Complete remaining tasks"
+  state="parked"
+  next_step="Resume only after explicit activation"
 elif [[ "$verification_exists" != true || "$report_exists" != true || "$status_entry_exists" != true ]]; then
   state="ready_for_verify"
   next_step="Add verification.md and workflow evidence"
@@ -140,6 +204,7 @@ if [[ "$json_output" == true ]]; then
 {
   "change": "${change_id}",
   "state": "${state}",
+  "scaffold_state": "${scaffold_state}",
   "next_step": "${next_step}",
   "tasks_total": ${tasks_total},
   "tasks_complete": ${tasks_complete}
@@ -148,6 +213,7 @@ EOF
 else
   echo "Change: ${change_id}"
   echo "State: ${state}"
+  echo "Scaffold: ${scaffold_state}"
   echo "Tasks: ${tasks_complete}/${tasks_total}"
   echo "Next: ${next_step}"
 fi

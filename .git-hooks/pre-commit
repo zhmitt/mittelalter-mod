@@ -21,22 +21,7 @@ if [[ -n "$legacy_specify_disallowed" ]]; then
   exit 1
 fi
 
-task_file_changes="$(echo "$staged_files" | grep -E '^openspec/changes/.*/tasks\.md$' || true)"
-if [[ -n "$task_file_changes" ]] || echo "$staged_files" | grep -q '^workflow/state/task-registry\.md$'; then
-  if [[ -x "workflow/scripts/tasks-sync.sh" ]] && ! workflow/scripts/tasks-sync.sh --check >/dev/null 2>&1; then
-    echo ""
-    echo "❌ Commit blocked: workflow/state/task-registry.md is stale."
-    echo "Run: workflow/scripts/tasks-sync.sh"
-    exit 1
-  fi
-fi
-
-if [[ -x "workflow/scripts/post-impl-check.sh" ]] && ! workflow/scripts/post-impl-check.sh --staged >/dev/null 2>&1; then
-  echo ""
-  echo "❌ Commit blocked: canonical post-implementation evidence is missing."
-  echo "Run: workflow/scripts/post-impl-prepare.sh --summary \"...\""
-  exit 1
-fi
+# Completion/checkpoint intent is checked once in commit-msg.
 
 code_regex='\.(c|cc|cpp|cs|go|h|hpp|java|js|jsx|kt|mjs|php|py|rb|rs|scala|sh|sql|swift|ts|tsx)$'
 todo_hits=""
@@ -60,34 +45,6 @@ if [[ -n "$todo_hits" ]]; then
   exit 1
 fi
 
-# Check A: Spec-drift for active openspec changes
-# Slug-only change-id regex (this repo does not use numeric prefixes).
-# Gracefully skipped in CI (gate runs there instead).
-if [ -z "${CI:-}" ]; then
-  active_change_ids=$(echo "$staged_files" | grep -oE 'openspec/changes/[A-Za-z0-9][A-Za-z0-9._-]*' | sed 's|openspec/changes/||' | sort -u || true)
-  for cid in $active_change_ids; do
-    [ "$cid" = "archive" ] && continue
-    if [ -x "workflow/scripts/spec-drift-check.sh" ]; then
-      if ! workflow/scripts/spec-drift-check.sh --change "$cid" --quiet; then
-        echo ""
-        echo "❌ Commit blocked: spec-drift detected for change $cid"
-        echo "   Run:    workflow/scripts/spec-drift-check.sh --change $cid"
-        echo "   Bypass: git commit --no-verify  (NOT recommended)"
-        exit 1
-      fi
-    fi
-  done
-fi
-
-# Check B: Claim-evidence in commit message (warn only)
-if [ -f ".git/COMMIT_EDITMSG" ] && [ -x "workflow/scripts/claim-evidence-check.sh" ]; then
-  if ! workflow/scripts/claim-evidence-check.sh .git/COMMIT_EDITMSG --quiet 2>&1; then
-    echo ""
-    echo "⚠️  WARNING: Commit message contains claims without evidence (test-name, file:line, exit code)"
-    echo "   Continuing anyway -- review the message above."
-    # NOT exit 1 -- only warn
-  fi
-fi
 
 if [ -x workflow/scripts/agent-evidence-check.sh ]; then
   workflow/scripts/agent-evidence-check.sh || true

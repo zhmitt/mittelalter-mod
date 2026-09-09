@@ -73,23 +73,32 @@ done < <(find openspec/changes -mindepth 1 -maxdepth 1 -type d ! -name archive |
   echo
   echo "## Active Changes"
   echo
+  active_delivery_count=0
+  recommended_next=""
   if [[ ${#active_changes[@]} -eq 0 ]]; then
     echo "- none"
-    echo
-    echo "## Recommended Next Step"
-    echo
-    echo "- Create or activate a change in openspec/changes/"
   else
     for change_dir in "${active_changes[@]}"; do
       change_id="$(basename "$change_dir")"
       state="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^State:/ {print $2}')"
       next_step="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^Next:/ {print $2}')"
-      echo "- ${change_id}: ${state}"
-      echo
-      echo "  Next: ${next_step}"
-      echo
+      if [[ "$state" == "active_write" ]]; then
+        echo "- ${change_id}: ${state}"
+        echo
+        echo "  Next: ${next_step}"
+        echo
+        active_delivery_count=$((active_delivery_count + 1))
+        [[ -n "$recommended_next" ]] || recommended_next="$next_step"
+      fi
     done
   fi
+  if [[ ${#active_changes[@]} -gt 0 && "$active_delivery_count" -eq 0 ]]; then
+    echo "- none"
+  fi
+  echo
+  echo "## Recommended Next Step"
+  echo
+  echo "- ${recommended_next:-No active delivery; explicitly activate one bounded change when needed.}"
 } > workflow/state/NEXT-SESSION.md
 
 echo "Session state updated."
