@@ -24,8 +24,9 @@ als done gemeldet (Util geschrieben, nirgends importiert; Schema verschärft,
 nicht aktiviert; re-exports vergessen; Script fehlt komplett). Typecheck +
 Test blieben grün, weil sie den ungetesteten Pfad nicht testen.
 
-Die Sections "Definition of Done", "Writing lane admission" und "Sub-Agent
-Output Format" in `AGENTS.md` sind verbindlich, nicht optional.
+Die in `AGENTS.md` ausgelösten Verfahren unter `workflow/procedures/`
+sind verbindlich: verification (Done), preservation (Writing lane admission)
+und delegation (Sub-Agent Output Format).
 
 **Vor einem finalen `done`/`fertig`-Claim:**
 `workflow/scripts/change-done.sh --change <id>` exit 0 prüfen.

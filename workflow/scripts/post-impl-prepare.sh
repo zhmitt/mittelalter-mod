@@ -237,9 +237,3 @@ echo "Prepared post-implementation artifacts for ${change_id}."
 echo "- ${verification_file}"
 echo "- ${report_file}"
 echo "- workflow/state/status.md"
-
-if workflow/scripts/post-impl-check.sh --change "$change_id" >/dev/null 2>&1; then
-  echo "Post-implementation check now passes for ${change_id}."
-else
-  echo "Post-implementation artifacts were prepared, but the change is not archive-ready yet."
-fi

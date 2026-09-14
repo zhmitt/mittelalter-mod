@@ -39,9 +39,19 @@ workflow/scripts/tasks-sync.sh >/dev/null
 
 timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 active_changes=()
-while IFS= read -r line; do
-  active_changes+=("$line")
-done < <(find openspec/changes -mindepth 1 -maxdepth 1 -type d ! -name archive | sort)
+change_states=()
+change_next_steps=()
+# tasks-sync already resolved every phase. Reuse that snapshot for both outputs,
+# retaining the previous alphabetical change order across registry sections.
+while IFS=$'\t' read -r change_id state next_step; do
+  active_changes+=("$change_id")
+  change_states+=("$state")
+  change_next_steps+=("$next_step")
+done < <(awk '
+  /^### / { id=substr($0, 5) }
+  /^- State: / { state=substr($0, 10) }
+  /^- Next: / { print id "\t" state "\t" substr($0, 9) }
+' workflow/state/task-registry.md | sort)
 
 {
   echo
@@ -51,10 +61,10 @@ done < <(find openspec/changes -mindepth 1 -maxdepth 1 -type d ! -name archive |
     echo "- Change: none"
     echo "- State: no_change"
   else
-    for change_dir in "${active_changes[@]}"; do
-      change_id="$(basename "$change_dir")"
-      state="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^State:/ {print $2}')"
-      next_step="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^Next:/ {print $2}')"
+    for index in "${!active_changes[@]}"; do
+      change_id="${active_changes[$index]}"
+      state="${change_states[$index]}"
+      next_step="${change_next_steps[$index]}"
       echo "- Change: ${change_id}"
       echo "- State: ${state}"
       echo "- Next: ${next_step}"
@@ -78,10 +88,10 @@ done < <(find openspec/changes -mindepth 1 -maxdepth 1 -type d ! -name archive |
   if [[ ${#active_changes[@]} -eq 0 ]]; then
     echo "- none"
   else
-    for change_dir in "${active_changes[@]}"; do
-      change_id="$(basename "$change_dir")"
-      state="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^State:/ {print $2}')"
-      next_step="$(workflow/scripts/phase-status.sh --change "$change_id" | awk -F': ' '/^Next:/ {print $2}')"
+    for index in "${!active_changes[@]}"; do
+      change_id="${active_changes[$index]}"
+      state="${change_states[$index]}"
+      next_step="${change_next_steps[$index]}"
       if [[ "$state" == "active_write" ]]; then
         echo "- ${change_id}: ${state}"
         echo
