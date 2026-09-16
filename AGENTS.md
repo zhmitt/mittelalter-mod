@@ -18,9 +18,16 @@ only reference it. Local product, legal and opt-in rules below remain binding.
   explicitly uses a native/opt-in plan. Typos, comments and tiny restorative fixes
   need no scaffolding. One outcome, at most three acceptance criteria, non-goals,
   short tasks, decisions and next action suffice; no new platform by default.
-- Implement the smallest useful slice, run affected checks, make a focused
-  breadcrumb. Stop at acceptance plus risk-appropriate evidence. Main may code
-  directly; delegate only for useful parallel work or required independent judgment.
+- Main owns outcome and integration. Use native subagents by default for meaningful
+  isolated analysis, implementation, tests and review when elapsed time, expertise
+  or context isolation benefits. Tiny coherent actions may stay local. A worker
+  does not require a visible task or separate worktree; use isolation only as needed.
+  Implement the smallest slice, check it and commit a breadcrumb; stop at acceptance.
+- Keep Main anchored at the primary main checkout; verify actual cwd, HEAD and
+  instruction baseline, not just the app's project label. Record temporary lanes.
+- A terminal worker/monitor result is a continuation trigger, not task completion.
+  Start or dispatch the authorized next action; report a real blocker otherwise.
+  Use one quiet observer with bounded backoff/timeout, never duplicate Main polling.
 - New findings default to non-blocking follow-up, not automatic tasks. Scope resets
   replace the old critical path. After two failed approaches, two unplanned fixes
   or three commits without acceptance progress, reassess before adding machinery.
@@ -90,6 +97,7 @@ Read the applicable procedure completely before taking that action.
 
 | Trigger | Procedure |
 | --- | --- |
+| Main startup, worker selection, external-result continuation or workspace reconciliation | workflow/procedures/execution-ownership.md |
 | Delegation or worker evidence | workflow/procedures/delegation.md |
 | Worker dispatch, blocked-stop recovery, external action, authority gap, pending operation | workflow/procedures/authority.md |
 | Workspace handoff, Claim Release, task/worktree cleanup | workflow/procedures/preservation.md |
@@ -99,6 +107,8 @@ Read the applicable procedure completely before taking that action.
 
 For ordinary work no extension is needed. Only use procedures present in this
 repository; its native instructions win over examples from other repository types.
+The execution-ownership defaults supersede older execution-shape preferences,
+not repository-specific safety, professional judgment or native mode boundaries.
 
 <!-- ## Proactive orchestration v3: recovery contract is in authority.md. -->
 
