@@ -3,6 +3,12 @@ name: openspec-verify
 description: Verify evidence before a change is considered complete.
 ---
 
-Prefer `@opsx-verifier` for isolated verification work.
+Verify the changed slice and its applicable high-risk controls; do not add
+unrelated full evidence or independent review. Reuse valid decisions and
+evidence unless an attested dependency changed. Use `@opsx-verifier` only when
+genuinely independent judgment is required.
 
-Use `workflow/scripts/milestone-sync.sh --summary "<what changed>"` for progress checkpoints, then use `workflow/scripts/post-impl-check.sh` for final completion and ensure `verification.md`, status entries, and reports exist.
+For final completion, use `workflow/scripts/post-impl-check.sh` and ensure
+`verification.md`, status entries, and reports exist. Reserve
+`workflow/scripts/milestone-sync.sh` for durable Claim Release, not ordinary
+breadcrumbs.

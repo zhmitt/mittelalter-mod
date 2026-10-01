@@ -5,4 +5,4 @@ argument-hint: change id
 
 Read the active change and `workflow/state/task-registry.md`.
 
-Implement from `tasks.md`, keep canonical artifacts current, refresh deterministic state with `workflow/scripts/tasks-sync.sh`, and record meaningful checkpoints with `workflow/scripts/milestone-sync.sh --summary "<what changed>"`.
+Treat the change as compact working memory and reuse recorded in-scope decisions unless an attested dependency changed, scope was exceeded, or genuine human-only judgment remains. Select risk, evidence, and delegation for the changed slice: Main may implement a bounded slice directly; delegate only for elapsed-time, specialized-capability, or independent-judgment benefit. Implement from `tasks.md`, keep canonical artifacts current, and run `workflow/scripts/tasks-sync.sh` when task or orchestration facts change. Use an ordinary `Change-Id` plus focused `Test` breadcrumb for coherent local progress; reserve `workflow/scripts/milestone-sync.sh` for durable Claim Release.
