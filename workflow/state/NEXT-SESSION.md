@@ -1,12 +1,12 @@
 # Next Session
 
 ## Current texture continuation — 2026-10-01
-- fix-arrow-slit-stone-texture: user_action_pending
-  Next: Press F3+T in the running Minecraft client and confirm arrow-slit masonry; then record visual evidence and run change-done once.
+- fix-arrow-slit-stone-texture: ready_for_archive
+  Next: User confirmed masonry in the running client and scoped change-done passed exit 0; no further fix is needed.
 
-Material-only correction built and tested; native desktop control cannot select
-Java. Exact code and evidence are preserved in the checkpoint commit for this
-change. Main remains on the primary checkout. No worker is writing these files.
+Material-only correction built, tested, and visually confirmed by the user.
+Implementation is preserved in c5945c0; final acceptance evidence is recorded in
+the change. Main remains on the primary checkout. No worker is writing these files.
 
 ## Current Minecraft continuation — 2026-10-01
 

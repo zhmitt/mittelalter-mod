@@ -2,11 +2,11 @@
 
 ## 2026-10-01 — arrow-slit presentation
 - Change: fix-arrow-slit-stone-texture
-- Orchestration: user_action_pending
-- Status: checkpointed
+- Orchestration: ready_for_archive
+- Status: done
 - Summary: Corrected stone-brick face and particle references; regression, geometry tests, and build pass.
 - Evidence: openspec/changes/fix-arrow-slit-stone-texture/verification.md
-- Next: User reloads client resources and confirms stone appearance.
+- Next: Scoped change-done exit 0 after user visual confirmation; ready for archive.
 
 Append-only project status log for deterministic session handover.
 
