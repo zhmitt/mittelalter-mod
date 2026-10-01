@@ -1,6 +1,6 @@
 # Spec-Drift Report: fix-arrow-slit-stone-texture
 
-Generated: 2026-10-01T12:17:40Z
+Generated: 2026-10-01T12:18:14Z
 
 ## Summary
 
