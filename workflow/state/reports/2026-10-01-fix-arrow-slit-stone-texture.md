@@ -4,4 +4,4 @@
 - Focused checks: Focused resource and collision tests, build, and artifact audit exit 0; material regression failed before fix. Evidence is in the change verification.md.
 - Open gates: None.
 - Final gate: change-done.sh --change fix-arrow-slit-stone-texture exit 0; `/tmp/mittelalter-arrow-slit-gate.log`.
-- Next: Ready for archive.
+- Next: Archived; evidence is in openspec/changes/archive/fix-arrow-slit-stone-texture/verification.md.

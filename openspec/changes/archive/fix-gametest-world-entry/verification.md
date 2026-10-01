@@ -45,3 +45,13 @@ save/reload, fortification projectile, or Arthurian full-progression claim is ma
 
 Final completion: `workflow/scripts/change-done.sh --change fix-gametest-world-entry`
 exit 0; all phases pass. Log: `/tmp/mittelalter-fix-world-entry-gate.log`.
+
+## Additional live combat check — 2026-10-01
+
+The user reports all recruited soldiers attack after the targeted command.
+This confirms visible attack response. Distinct melee hits versus ranged arrow
+hits have not been independently observed by Main. The user also confirmed
+save/quit/reload with troops retained and subsequent Hold/Follow commands,
+and arrow-slit firing/walking collision checks in both orientations. These are
+user-reported gameplay checks, not independently observed frames. They do not
+change the scoped fix's completion.

@@ -14,4 +14,5 @@ passed exit 0 (/tmp/mittelalter-materials-after.log), as did release-artifact-au
 blocks is not claimed. Next: reload client resources with F3+T and view the blocks.
 
 - Open gates: None for resource-reference acceptance.
-- Next: Complete the scoped gate, archive and push.
+- Final gate: change-done.sh --change fix-fortification-materials exit 0; /tmp/mittelalter-materials-gate.log.
+- Next: Archived evidence in openspec/changes/archive/fix-fortification-materials/verification.md; push approved.

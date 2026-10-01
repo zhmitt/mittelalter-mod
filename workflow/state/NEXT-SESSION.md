@@ -1,24 +1,18 @@
 # Next Session
 
-## Current texture continuation — 2026-10-01
-- fix-arrow-slit-stone-texture: ready_for_archive
-  Next: User confirmed masonry in the running client and scoped change-done passed exit 0; no further fix is needed.
+## Current Minecraft handoff — 2026-10-01
 
-Material-only correction built, tested, and visually confirmed by the user.
-Implementation is preserved in c5945c0; final acceptance evidence is recorded in
-the change. Main remains on the primary checkout. No worker is writing these files.
+GameTest world-entry and arrow-slit appearance fixes passed their change-done
+gates and are archived. User confirmed recruitment, commands, attack response,
+save/reload and arrow-slit cover. Evidence lives in the archived changes.
 
-## Current Minecraft continuation — 2026-10-01
-
-- fix-gametest-world-entry: ready_for_archive
-  Next: Scoped change-done passed exit 0; next live gameplay check is soldier combat in the running test world.
-
-Codec regression, four mod GameTests, build, and JAR audit pass. The user entered
-Mittelalter Fix Test and confirmed basic recruitment and Follow/Hold; the client
-log confirms both foot and archer recruitment. Native desktop control cannot
-select the Java client. Checkpoint d1e91cd preserves the code; the final gate
-passed exit 0. Primary main checkout. Existing older worlds remain untouched. Historical workflow
-handoff below remains unrelated to this gameplay verification.
+The tiny remaining material correction gives reinforced stone stone-brick faces
+and oak palisades oak-log sides/end grain. Full test/build and artifact audit pass.
+Next: F3+T in the running client to view those two corrected blocks, then continue
+with recipe/equipment checks if requested. Native UI control cannot select Java;
+visual checks are user-operated. Primary main checkout; older worlds untouched.
+No writing workers or gameplay blockers remain. Historical workflow handoff
+below is unrelated to this gameplay verification.
 
 **Last Updated:** 2026-08-16 09:52:13
 

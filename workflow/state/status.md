@@ -2,11 +2,11 @@
 
 ## 2026-10-01 — remaining fortification materials
 - Change: fix-fortification-materials
-- Orchestration: ready_for_verify
-- Status: ready_for_verify
+- Orchestration: done
+- Status: archived
 - Summary: Matching vanilla stone and oak materials; regression, full test/build and artifact audit pass.
-- Evidence: openspec/changes/fix-fortification-materials/verification.md
-- Next: Run scoped completion gate, archive and push.
+- Evidence: openspec/changes/archive/fix-fortification-materials/verification.md
+- Next: Scoped completion gate exit 0; archive preserved, push approved.
 
 ## 2026-10-01 — arrow-slit presentation
 - Change: fix-arrow-slit-stone-texture
