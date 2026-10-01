@@ -1,9 +1,6 @@
 package de.mittelalter.gametest;
 
 import java.util.UUID;
-import java.util.function.Consumer;
-
-import com.mojang.serialization.MapCodec;
 
 import de.mittelalter.MittelalterMod;
 import de.mittelalter.camelot.CamelotSavedData;
@@ -20,13 +17,16 @@ import de.mittelalter.tournament.TournamentMode;
 import de.mittelalter.tournament.TournamentSession;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.network.chat.Component;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 /** Dedicated-server integration coverage for the V1 release candidate. */
 @EventBusSubscriber(modid = MittelalterMod.MODID)
@@ -49,18 +50,29 @@ public final class MittelalterGameTests {
     private MittelalterGameTests() {}
 
     @SubscribeEvent
-    public static void register(RegisterGameTestsEvent event) {
-        register(event, "soldier_state_round_trip", 40, MittelalterGameTests::soldierStateRoundTrip);
-        register(event, "soldier_combat_roles", 40, MittelalterGameTests::soldierCombatRoles);
-        register(event, "soldier_command_authority", 20, MittelalterGameTests::soldierCommandAuthority);
-        register(event, "camelot_tournament_role_progression", 20, MittelalterGameTests::camelotTournamentRoleProgression);
+    public static void registerFunctions(RegisterEvent event) {
+        event.register(Registries.TEST_FUNCTION, functions -> {
+            functions.register(id("soldier_state_round_trip"), MittelalterGameTests::soldierStateRoundTrip);
+            functions.register(id("soldier_combat_roles"), MittelalterGameTests::soldierCombatRoles);
+            functions.register(id("soldier_command_authority"), MittelalterGameTests::soldierCommandAuthority);
+            functions.register(id("camelot_tournament_role_progression"),
+                    MittelalterGameTests::camelotTournamentRoleProgression);
+        });
     }
 
-    private static void register(RegisterGameTestsEvent event, String path, int maxTicks,
-                                 Consumer<GameTestHelper> body) {
+    @SubscribeEvent
+    public static void register(RegisterGameTestsEvent event) {
+        register(event, "soldier_state_round_trip", 40);
+        register(event, "soldier_combat_roles", 40);
+        register(event, "soldier_command_authority", 20);
+        register(event, "camelot_tournament_role_progression", 20);
+    }
+
+    private static void register(RegisterGameTestsEvent event, String path, int maxTicks) {
         TestData<Holder<TestEnvironmentDefinition<?>>> data = new TestData<>(
                 DEFAULT_ENVIRONMENT, EMPTY_STRUCTURE, maxTicks, 0, true, Rotation.NONE);
-        event.registerTest(id(path), new DirectGameTestInstance(data, body));
+        event.registerTest(id(path), new FunctionGameTestInstance(
+                ResourceKey.create(Registries.TEST_FUNCTION, id(path)), data));
     }
 
     private static Identifier id(String path) {
@@ -68,6 +80,7 @@ public final class MittelalterGameTests {
     }
 
     private static void soldierStateRoundTrip(GameTestHelper helper) {
+        assertGameTestRegistrySerializable(helper);
         Player owner = helper.makeMockPlayer(GameType.CREATIVE);
         SoldierEntity.Archer original = helper.spawn(ModEntities.ARCHER_SOLDIER.get(), 1, 2, 1);
         LivingEntity target = helper.spawn(EntityType.ZOMBIE, 3, 2, 1);
@@ -86,6 +99,26 @@ public final class MittelalterGameTests {
         restored.aiStep();
         helper.assertValueEqual(restored.order(), SoldierOrder.FOLLOW, "invalid target fallback order");
         helper.succeed();
+    }
+
+    /** Exercise the same dispatched NBT codec used when GameTests sync during player login. */
+    private static void assertGameTestRegistrySerializable(GameTestHelper helper) {
+        var registries = helper.getLevel().registryAccess();
+        var ops = RegistryOps.create(NbtOps.INSTANCE, registries);
+        var tests = registries.lookupOrThrow(Registries.TEST_INSTANCE);
+        int checked = 0;
+        for (var entry : tests.entrySet()) {
+            if (entry.getKey().identifier().getNamespace().equals(MittelalterMod.MODID)) {
+                var encoded = GameTestInstance.DIRECT_CODEC.encodeStart(ops, entry.getValue()).getOrThrow();
+                var decoded = GameTestInstance.DIRECT_CODEC.parse(ops, encoded).getOrThrow();
+                helper.assertValueEqual(decoded.structure(), entry.getValue().structure(),
+                        "synchronized GameTest structure");
+                helper.assertValueEqual(decoded.maxTicks(), entry.getValue().maxTicks(),
+                        "synchronized GameTest timeout");
+                checked++;
+            }
+        }
+        helper.assertValueEqual(checked, 4, "serialized mod GameTest count");
     }
 
     private static void soldierCombatRoles(GameTestHelper helper) {
@@ -159,29 +192,4 @@ public final class MittelalterGameTests {
         helper.succeed();
     }
 
-    /** Programmatic test instance; serialization is not used for mod-bus registrations. */
-    private static final class DirectGameTestInstance extends GameTestInstance {
-        private final Consumer<GameTestHelper> body;
-
-        private DirectGameTestInstance(TestData<Holder<TestEnvironmentDefinition<?>>> data,
-                                       Consumer<GameTestHelper> body) {
-            super(data);
-            this.body = body;
-        }
-
-        @Override
-        public void run(GameTestHelper helper) {
-            body.accept(helper);
-        }
-
-        @Override
-        public MapCodec<? extends GameTestInstance> codec() {
-            return FunctionGameTestInstance.CODEC;
-        }
-
-        @Override
-        protected net.minecraft.network.chat.MutableComponent typeDescription() {
-            return Component.literal("mittelalter:direct");
-        }
-    }
 }

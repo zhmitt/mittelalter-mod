@@ -249,3 +249,11 @@ Append-only project status log for deterministic session handover.
 - Completed: All tracked tasks are currently marked complete.
 - Evidence: openspec/changes/2026-08-16-outcome-guard/verification.md, workflow/state/reports/2026-08-16-2026-08-16-outcome-guard.md
 - Next: Complete proposal and delta specs
+
+## 2026-10-01 — local Minecraft verification
+- Change: fix-gametest-world-entry
+- Orchestration: user_action_pending
+- Status: checkpointed
+- Summary: GameTest encoding regression and dedicated tests pass; client started, but desktop control cannot select the Java window.
+- Evidence: openspec/changes/fix-gametest-world-entry/verification.md
+- Next: User creates a new Creative test world; Main checks login and basic interactions.

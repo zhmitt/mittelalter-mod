@@ -1,5 +1,16 @@
 # Next Session
 
+## Current Minecraft continuation — 2026-10-01
+
+- fix-gametest-world-entry: user_action_pending
+  Next: In the running client create a Creative world named Mittelalter Fix Test 2026-10-01 with commands enabled; then inspect /tmp/mittelalter-world-entry-client.log for successful login and perform basic mod interaction checks.
+
+Codec regression, four mod GameTests, build, and JAR audit pass. Native desktop
+control cannot select the Java client. Checkpoint preserves the local fix;
+world-entry acceptance and change-done remain open. Primary main checkout,
+baseline 89a6f38. Existing world files remain untouched. Historical workflow
+handoff below remains unrelated to this gameplay verification.
+
 **Last Updated:** 2026-08-16 09:52:13
 
 ## Last Milestone
