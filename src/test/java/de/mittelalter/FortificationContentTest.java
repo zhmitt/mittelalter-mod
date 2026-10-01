@@ -37,6 +37,16 @@ class FortificationContentTest {
     }
 
     @Test
+    void remainingFortificationsUseMatchingBuildingMaterials() throws Exception {
+        String stone = read("assets/mittelalter/models/block/reinforced_stone.json");
+        String palisade = read("assets/mittelalter/models/block/oak_palisade.json");
+        assertTrue(stone.contains("\"all\": \"minecraft:block/stone_bricks\""));
+        assertTrue(palisade.contains("\"parent\": \"minecraft:block/cube_column\""));
+        assertTrue(palisade.contains("\"side\": \"minecraft:block/oak_log\""));
+        assertTrue(palisade.contains("\"end\": \"minecraft:block/oak_log_top\""));
+    }
+
+    @Test
     void miningTagsKeepWoodAndIronGatedStoneScoped() throws Exception {
         String axe = read("data/minecraft/tags/block/mineable/axe.json");
         String pickaxe = read("data/minecraft/tags/block/mineable/pickaxe.json");

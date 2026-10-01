@@ -1,4 +1,4 @@
 {
   "parent": "minecraft:block/cube_all",
-  "textures": { "all": "mittelalter:block/reinforced_stone" }
+  "textures": { "all": "minecraft:block/stone_bricks" }
 }

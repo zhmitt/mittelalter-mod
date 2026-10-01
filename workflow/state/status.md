@@ -1,12 +1,20 @@
 # Status Log
 
+## 2026-10-01 — remaining fortification materials
+- Change: fix-fortification-materials
+- Orchestration: ready_for_verify
+- Status: ready_for_verify
+- Summary: Matching vanilla stone and oak materials; regression, full test/build and artifact audit pass.
+- Evidence: openspec/changes/fix-fortification-materials/verification.md
+- Next: Run scoped completion gate, archive and push.
+
 ## 2026-10-01 — arrow-slit presentation
 - Change: fix-arrow-slit-stone-texture
-- Orchestration: ready_for_archive
-- Status: done
+- Orchestration: done
+- Status: archived
 - Summary: Corrected stone-brick face and particle references; regression, geometry tests, and build pass.
-- Evidence: openspec/changes/fix-arrow-slit-stone-texture/verification.md
-- Next: Scoped change-done exit 0 after user visual confirmation; ready for archive.
+- Evidence: openspec/changes/archive/fix-arrow-slit-stone-texture/verification.md
+- Next: Archived after scoped change-done exit 0 and user visual confirmation.
 
 Append-only project status log for deterministic session handover.
 
@@ -260,8 +268,8 @@ Append-only project status log for deterministic session handover.
 
 ## 2026-10-01 — local Minecraft verification
 - Change: fix-gametest-world-entry
-- Orchestration: ready_for_archive
-- Status: verified
+- Orchestration: done
+- Status: archived
 - Summary: Codec regression and dedicated tests pass; real world login and basic recruitment/Follow/Hold are confirmed by user and client log.
-- Evidence: openspec/changes/fix-gametest-world-entry/verification.md
-- Next: Optional full soldier combat playtest; change-done passed exit 0 on 2026-10-01.
+- Evidence: openspec/changes/archive/fix-gametest-world-entry/verification.md
+- Next: Archived after change-done exit 0; additional user gameplay evidence is preserved in the change.
