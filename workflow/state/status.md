@@ -1,5 +1,13 @@
 # Status Log
 
+## 2026-10-01 — arrow-slit presentation
+- Change: fix-arrow-slit-stone-texture
+- Orchestration: user_action_pending
+- Status: checkpointed
+- Summary: Corrected stone-brick face and particle references; regression, geometry tests, and build pass.
+- Evidence: openspec/changes/fix-arrow-slit-stone-texture/verification.md
+- Next: User reloads client resources and confirms stone appearance.
+
 Append-only project status log for deterministic session handover.
 
 ## 2026-07-09 07:40:24

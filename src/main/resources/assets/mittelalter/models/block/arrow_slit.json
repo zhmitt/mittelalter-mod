@@ -1,7 +1,7 @@
 {
   "textures": {
-    "all": "mittelalter:block/arrow_slit",
-    "particle": "mittelalter:block/arrow_slit"
+    "all": "minecraft:block/stone_bricks",
+    "particle": "minecraft:block/stone_bricks"
   },
   "elements": [
     { "from": [0, 0, 0], "to": [6, 16, 16], "faces": { "north": {"texture":"#all"}, "south": {"texture":"#all"}, "east": {"texture":"#all"}, "west": {"texture":"#all"}, "up": {"texture":"#all"}, "down": {"texture":"#all"} } },

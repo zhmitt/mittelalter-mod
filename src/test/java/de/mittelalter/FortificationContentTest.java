@@ -28,6 +28,15 @@ class FortificationContentTest {
     }
 
     @Test
+    void arrowSlitUsesMasonryForFacesAndParticles() throws Exception {
+        String model = read("assets/mittelalter/models/block/arrow_slit.json");
+        assertTrue(model.contains("\"all\": \"minecraft:block/stone_bricks\""),
+                "Arrow-slit frame must render masonry, not the incorrectly copied sword sprite");
+        assertTrue(model.contains("\"particle\": \"minecraft:block/stone_bricks\""),
+                "Arrow-slit breaking particles must match the masonry frame");
+    }
+
+    @Test
     void miningTagsKeepWoodAndIronGatedStoneScoped() throws Exception {
         String axe = read("data/minecraft/tags/block/mineable/axe.json");
         String pickaxe = read("data/minecraft/tags/block/mineable/pickaxe.json");
