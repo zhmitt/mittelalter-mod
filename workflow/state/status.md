@@ -252,8 +252,8 @@ Append-only project status log for deterministic session handover.
 
 ## 2026-10-01 — local Minecraft verification
 - Change: fix-gametest-world-entry
-- Orchestration: user_action_pending
-- Status: checkpointed
-- Summary: GameTest encoding regression and dedicated tests pass; client started, but desktop control cannot select the Java window.
+- Orchestration: ready_for_archive
+- Status: verified
+- Summary: Codec regression and dedicated tests pass; real world login and basic recruitment/Follow/Hold are confirmed by user and client log.
 - Evidence: openspec/changes/fix-gametest-world-entry/verification.md
-- Next: User creates a new Creative test world; Main checks login and basic interactions.
+- Next: Optional full soldier combat playtest; change-done passed exit 0 on 2026-10-01.
