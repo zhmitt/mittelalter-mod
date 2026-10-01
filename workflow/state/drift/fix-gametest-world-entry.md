@@ -1,6 +1,6 @@
 # Spec-Drift Report: fix-gametest-world-entry
 
-Generated: 2026-10-01T11:43:54Z
+Generated: 2026-10-01T11:44:42Z
 
 ## Summary
 
