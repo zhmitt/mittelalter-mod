@@ -6,6 +6,14 @@ Read only when the core names this trigger. Retained repository-specific details
 
 Apply the [upstream storage standard](https://github.com/zhmitt/app.dev-template/commit/81c27c3cdf6e803afab3a075f24ff59070cf9785): record the consumer, canonical source, and release condition in the existing work record before creating a large copy. Keep checked artifacts at their existing build, CI, or provider location. Make only the working copy needed by the consumer and release it at the agreed endpoint when authorized and safe. Retain compact evidence and source identity, plus retrievable and verifiable original bytes where recovery or audit requires them. An expiring CI artifact is a handoff, not a durable rollback source. Do not add separate tracking or retention machinery.
 
+End retention when the purpose ends. For each affected release target, keep
+the current artifact and configuration and one verified, named predecessor.
+Release the old predecessor once its replacement is verified. Keep compact
+historical results, identities and checksums. Retain older original bytes
+only for a named recovery need, an open investigation or a documented
+retention obligation, with an end condition. Once those needs are resolved,
+retire the exact obsolete payloads under the owner's cleanup authority.
+
 ## Workspace ownership and branch handoff
 
 Every active line of work must use one explicit workspace mode at a time:
