@@ -2,6 +2,10 @@
 
 Read only when the core names this trigger. Retained repository-specific details.
 
+## Large working copies and artifacts
+
+Apply the [upstream storage standard](https://github.com/zhmitt/app.dev-template/commit/81c27c3cdf6e803afab3a075f24ff59070cf9785): record the consumer, canonical source, and release condition in the existing work record before creating a large copy. Keep checked artifacts at their existing build, CI, or provider location. Make only the working copy needed by the consumer and release it at the agreed endpoint when authorized and safe. Retain compact evidence and source identity, plus retrievable and verifiable original bytes where recovery or audit requires them. An expiring CI artifact is a handoff, not a durable rollback source. Do not add separate tracking or retention machinery.
+
 ## Workspace ownership and branch handoff
 
 Every active line of work must use one explicit workspace mode at a time:
