@@ -14,6 +14,26 @@ only for a named recovery need, an open investigation or a documented
 retention obligation, with an end condition. Once those needs are resolved,
 retire the exact obsolete payloads under the owner's cleanup authority.
 
+### Local artifact lifetime
+
+Install dependencies when a checkout needs them. Keep its lockfile and use the
+package manager's existing shared store. Keep installations local to their
+checkout. When a consumer still links into a different checkout's install,
+preserve that dependency until the consumer finishes or its independent
+installation is proven. Release the reproducible installation as a group when
+its last real consumer is done.
+
+Have the existing build or release caller own one exact working directory and
+build directly into it when supported. Give test builds their own path. Remove
+disposable test output after the run, including on failure. For release scratch,
+wait for the native operation and its consumers to finish. Preserve current
+artifacts, the recovery input and the specific evidence needed for open failures.
+A cleanup error after a successful effect leaves that effect settled. Record
+the exact leftover for later cleanup and keep the existing release result.
+Record peak additional disk use and the bytes kept after the first normal use
+of a changed producer. Measure free space on the filesystem before and after an
+actual retirement, separately from the size of the paths removed.
+
 ## Workspace ownership and branch handoff
 
 Every active line of work must use one explicit workspace mode at a time:

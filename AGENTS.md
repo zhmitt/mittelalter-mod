@@ -100,7 +100,7 @@ Read the applicable procedure completely before taking that action.
 | Main startup, worker selection, external-result continuation or workspace reconciliation | workflow/procedures/execution-ownership.md |
 | Delegation or worker evidence | workflow/procedures/delegation.md |
 | Worker dispatch, blocked-stop recovery, external action, authority gap, pending operation | workflow/procedures/authority.md |
-| Workspace handoff, Claim Release, task/worktree cleanup | workflow/procedures/preservation.md |
+| Local build or release artifacts, Workspace handoff, Claim Release, task/worktree cleanup | workflow/procedures/preservation.md |
 | Final verification, archive or hook maintenance | workflow/procedures/verification.md |
 | Material rescope, supporting-work escalation, approval/publication/release/migration gate or journey evidence | workflow/procedures/scope.md |
 | Tool adapter or starter customization | workflow/procedures/adapters.md |
